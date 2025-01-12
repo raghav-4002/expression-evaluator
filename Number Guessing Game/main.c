@@ -2,16 +2,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define ASCII_ZERO 48
+#define ASCII_ZERO 48 // To check if user want to play again
 
-int play(int);
 void print_message(void);
+int play(int);
 int generate_number(void);
 void handle_input(int *);
 void clear_buffer(void);
 
-int main(void) 
-{
+int main(void) {
 
   int difficulty;
   char term;
@@ -22,52 +21,53 @@ int main(void)
   print_message();
 
   while (continue_playing) {
-    
+
     printf("-----------------------------------------------------------\n");
     printf("Choose difficulty (1: Easy, 2: Medium, 3: Hard): ");
-    
+
     /*Handling invalid difficulty*/
     if (scanf("%d%c", &difficulty, &term) != 2 || term != '\n') {
 
       printf("\nPlease enter a valid difficulty.\n");
       clear_buffer();
       continue;
-
     }
 
     switch (difficulty) {
 
     case 1:
-      play(10); //Easy: 10 attempts
+      play(10); // Easy: 10 attempts
       break;
 
     case 2:
-      play(7); //Medium: 7 attempts
+      play(7); // Medium: 7 attempts
       break;
 
     case 3:
-      play(5); //Hard: 5 attempts
+      play(5); // Hard: 5 attempts
       break;
 
     default:
       printf("Please enter a valid difficulty\n");
       continue;
-
     }
 
     printf("\nEnter '0' to quit(any other character to continue playing): ");
     continue_playing = getchar() - ASCII_ZERO; // char '0' will convert to int 0
-
   }
 
   return 0;
-
 }
 
+void print_message(void) {
 
+  printf("\n------------------------------------------------------------\n");
+  printf("\tWELCOME TO THE NUMBER GUESSING GAME\n");
+  printf("You have to guess the correct number between 1 and 100.\n");
+  printf("\nEasy: 10 attempts; Medium: 7 attempts; Hard: 5 attempts\n");
+}
 
-int play(int attempts) 
-{
+int play(int attempts) {
 
   int guess, rand_number = generate_number();
 
@@ -75,7 +75,7 @@ int play(int attempts)
 
   handle_input(&guess);
 
-  attempts--;  //Decrement attempt after first guess
+  attempts--; // Decrement attempt after first guess
 
   while (guess != rand_number && attempts != 0) {
 
@@ -90,46 +90,35 @@ int play(int attempts)
     attempts--;
 
     handle_input(&guess);
-
   }
 
-  if (attempts == 0) { //If user runs out of all attempts
+  if (attempts == 0) { // If user runs out of all attempts
 
     printf("You've run out of all the attempts! The correct number was %d\n",
            rand_number);
 
-    return NULL; //Return null for exiting the funtion
-
+    return NULL; // Return null for exiting the funtion
   }
 
+  /*If attempts != 0*/
   printf("Correct! The number was indeed %d\n", rand_number);
-
 }
 
 int generate_number(void) { return (rand() % 100 + 1); }
 
-void print_message(void) {
+void handle_input(int *num) {
 
-  printf("\n------------------------------------------------------------\n");
-  printf("\tWELCOME TO THE NUMBER GUESSING GAME\n");
-  printf("You have to guess the correct number between 1 and 100.\n");
-  printf("\nEasy: 10 attempts; Medium: 7 attempts; Hard: 5 attempts\n");
+  char term;
+
+  while (scanf("%d%c", num, &term) != 2 || term != '\n') {
+
+    printf("Please enter a valid number: ");
+    clear_buffer();
+  }
 }
 
 void clear_buffer(void) {
 
   while (getchar() != '\n')
     ;
-}
-
-void handle_input(int *num)
-{
-  char term;
-
-  while(scanf("%d%c", num, &term) != 2 || term != '\n') {
-
-    printf("Please enter a valid number: ");
-    clear_buffer();
-    
-  }
 }
