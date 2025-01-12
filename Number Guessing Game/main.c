@@ -55,7 +55,7 @@ int main(void)
     
         printf("\nEnter '0' to quit(any other character to continue playing): ");
         continue_playing = getchar() - ASCII_ZERO; // char '0' will convert to int 0
-  }
+    }
 
     return 0;
 }
