@@ -10,27 +10,27 @@ int generate_number(void);
 void handle_input(int *);
 void clear_buffer(void);
 
-int main(void) {
+int main(void) 
+{
+    int difficulty;
+    char term;
+    bool continue_playing = true;
 
-  int difficulty;
-  char term;
-  bool continue_playing = true;
+    srand(time(0)); // Seed random number generator
 
-  srand(time(0)); // Seed random number generator
+    print_message();
 
-  print_message();
+    while (continue_playing) {
 
-  while (continue_playing) {
+        printf("-----------------------------------------------------------\n");
+        printf("Choose difficulty (1: Easy, 2: Medium, 3: Hard): ");
 
-    printf("-----------------------------------------------------------\n");
-    printf("Choose difficulty (1: Easy, 2: Medium, 3: Hard): ");
+        /*Handling invalid difficulty*/
+        if (scanf("%d%c", &difficulty, &term) != 2 || term != '\n') {
 
-    /*Handling invalid difficulty*/
-    if (scanf("%d%c", &difficulty, &term) != 2 || term != '\n') {
-
-      printf("\nPlease enter a valid difficulty.\n");
-      clear_buffer();
-      continue;
+        printf("\nPlease enter a valid difficulty.\n");
+        clear_buffer();
+        continue;
     }
 
     switch (difficulty) {
@@ -59,16 +59,18 @@ int main(void) {
   return 0;
 }
 
-void print_message(void) {
 
+void print_message(void)
+{
   printf("\n------------------------------------------------------------\n");
   printf("\tWELCOME TO THE NUMBER GUESSING GAME\n");
   printf("You have to guess the correct number between 1 and 100.\n");
   printf("\nEasy: 10 attempts; Medium: 7 attempts; Hard: 5 attempts\n");
 }
 
-int play(int attempts) {
 
+int play(int attempts)
+{
   int guess, rand_number = generate_number();
 
   printf("Guess the number(You have %d attempts): ", attempts);
