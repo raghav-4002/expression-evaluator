@@ -70,7 +70,7 @@ void print_message(void)
 }
 
 
-int play(int attempts)
+void play(int attempts)
 {
     int guess, rand_number = generate_number();
 
@@ -99,7 +99,7 @@ int play(int attempts)
         printf("You've run out of all the attempts! The correct number was %d\n",
             rand_number);
 
-        return NULL; // Return null for exiting the funtion
+        return;
     }
 
     /*If attempts != 0*/
