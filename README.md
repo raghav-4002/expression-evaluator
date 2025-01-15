@@ -6,3 +6,4 @@
 
 ## Projects:
 - [Number guessing game in C](https://github.com/raghav-4002/micro-projects/tree/main/Number%20Guessing%20Game)
+- [Simple Calculator in C](https://github.com/raghav-4002/micro-projects/tree/main/Simple%20Calculator)
