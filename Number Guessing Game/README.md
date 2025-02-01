@@ -23,3 +23,8 @@
 - How computers generate (pseudo) random numbers.  
 - Hanling invalid inputs via scanf.
 - Refactoring the code into multiple, managable pieces.
+
+<br>
+
+## Potential Bugs:
+- The game will mark it as a 'lost game' if the correct number is guessed at the very last attempt.
