@@ -5,7 +5,7 @@
 #define ASCII_ZERO 48 // To check if user want to play again
 
 void print_message(void);
-int play(int);
+void play(int);
 int generate_number(void);
 void handle_input(int *);
 void clear_buffer(void);
