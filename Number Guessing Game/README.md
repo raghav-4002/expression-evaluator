@@ -27,4 +27,4 @@
 <br>
 
 ## Potential Bugs:
-- The game will mark it as a 'lost game' if the correct number is guessed at the very last attempt.
+- ~~The game will mark it as a 'lost game' if the correct number is guessed at the very last attempt~~.

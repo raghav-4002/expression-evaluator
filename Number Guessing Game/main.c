@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define ASCII_ZERO 48 // To check if user want to play again
+#define ASCII_ZERO 48 // To check if the user wants to play again
 
 void print_message(void);
 void play(int);
@@ -95,7 +95,7 @@ void play(int attempts)
         handle_input(&guess);
     }
 
-    if (attempts == 0) { // If user runs out of all attempts
+    if (attempts == 0 && guess != rand_number) { // If user runs out of all attempts
         printf("You've run out of all the attempts! The correct number was %d\n",
             rand_number);
 

@@ -1,5 +1,7 @@
 # For Number guessing game
 /Number Guessing Game/*.out
+/Number Guessing Game/output/
 
 # For the simple calculator
 /Simple Calculator/*.out
+/Simple Calculator/output/
