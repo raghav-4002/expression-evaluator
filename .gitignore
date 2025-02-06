@@ -2,6 +2,7 @@
 /Stopwatch/*.out
 /Stopwatch/output/
 /Stopwatch/todo
+/Stopwatch/test.*
 
 # For Number guessing game
 /Number Guessing Game/*.out

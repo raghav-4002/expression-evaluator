@@ -1,9 +1,11 @@
+/*clear screen using printf("\033[H\033[J");*/
+
 #include <stdio.h>
 #include <time.h>
 
 void format_time(time_t seconds);
 
-int main(int argc, char **argv)
+int main(void)
 {
 
     struct timespec start, end;
