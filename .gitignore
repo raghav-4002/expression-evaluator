@@ -1,3 +1,8 @@
+# For Stopwatch
+/Stopwatch/*.out
+/Stopwatch/output/
+/Stopwatch/todo
+
 # For Number guessing game
 /Number Guessing Game/*.out
 /Number Guessing Game/output/
