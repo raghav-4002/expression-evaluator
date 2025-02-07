@@ -1,13 +1,17 @@
 # For Stopwatch
-/Stopwatch/*.out
-/Stopwatch/output/
-/Stopwatch/todo
-/Stopwatch/test.*
+/Stopwatch/output
+/Stopwatch/*.out 
+/Stopwatch/todo*
+/Stopwatch/test*
 
-# For Number guessing game
-/Number Guessing Game/*.out
-/Number Guessing Game/output/
-
-# For the simple calculator
+#For Calculator
+/Simple Calculator/output
 /Simple Calculator/*.out
-/Simple Calculator/output/
+/Simple Calculator/todo*
+/Simple Calculator/test*
+
+#For Number guessing game
+/Number Guessing Game/output
+/Number Guessing Game/*.out
+/Number Guessing Game/todo*
+/Number Guessing Game/test*
