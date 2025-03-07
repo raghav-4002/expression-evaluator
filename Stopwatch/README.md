@@ -18,8 +18,6 @@
 <br>
 
 ## Potential bugs and missing features:
-- Bugs
-    - It seems to me that the stopwatch is little faster than expected (not totally sure).
 
 - Missing features:
     - Only compiles on POSIX Compliant operating systems (Unix, Linux and MacOs)
@@ -32,5 +30,3 @@
     - Learned about the 'read()' syscall.
     - Learned about 'File streams and file descriptors' and how they differ.
     - Learned about 'bit-flags, bit-manipulation and bit-masking'.
-
-- 'time.h' and time functions and datatypes available in C.
