@@ -31,11 +31,14 @@ int main(void)
 
     clear_screen();
 
-    while(read(STDIN_FILENO, &status, 1) != 1) {
-        clear_screen();
+    while(1) {
+        format_time(seconds_elapsed);
+        
+        if(read(STDIN_FILENO, &status, 1) == 1)
+            break;
 
         seconds_elapsed++;
-        format_time(seconds_elapsed);
+        clear_screen();
     }
     
     return 0;
@@ -51,9 +54,9 @@ void enable_raw_mode(void)
 
     struct termios raw = orig_termios;
 
-    raw.c_lflag &= ~(ICANON | ECHO); /*Disable canonical mode and input echoing*/
+    raw.c_lflag &= ~(ICANON | ECHO);  /*Disable canonical mode and input echoing*/
     raw.c_cc[VTIME] = 10;             /*Set waiting time for 'read()' to be 1 sec*/
-    raw.c_cc[VMIN] = 0;              /*Set min characters to be read by 'read()' as 0*/
+    raw.c_cc[VMIN] = 0;               /*Set min characters to be read by 'read()' as 0*/
 
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);    
 }

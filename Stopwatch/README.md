@@ -18,8 +18,6 @@
 <br>
 
 ## Potential bugs and missing features:
-- Bugs
-    - It seems to me that the stopwatch is little faster than expected (not totally sure).
 
 - Missing features:
     - Only compiles on POSIX Compliant operating systems (Unix, Linux and MacOs)
