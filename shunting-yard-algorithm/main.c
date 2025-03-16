@@ -26,6 +26,7 @@ void input_to_stack(void);
 void empty_stack(void);
 void stack_to_post(void);
 void handle_operand(void);
+int is_lower_precedence(void);
 
 
 
@@ -53,6 +54,9 @@ read_input(void)
 void
 process_input(void)
 {
+    top++;
+    stack[top] = '(';
+
     while(input[input_count] != '\n') {
         if(isalpha(input[input_count])) {
             input_to_postfix();
@@ -73,7 +77,10 @@ process_input(void)
         }
 
         handle_operand();
+        input_count++;
     }
+
+    empty_stack();
 
     /* add null character at the end */
     postfix[post_count] = '\0';
@@ -123,7 +130,70 @@ stack_to_post(void)
 void
 handle_operand(void)
 {
+    while(is_lower_precedence()) {
+        stack_to_post();
+    }
 
+    top++;
+    stack[top] = input[input_count];
+}
+
+
+
+int
+is_lower_precedence(void)
+{
+    switch(input[input_count]) {
+        case '^':
+            if(stack[top] == '-') return 0;
+            if(stack[top] == '+') return 0;
+            if(stack[top] == '*') return 0;
+            if(stack[top] == '/') return 0;
+            if(stack[top] == '^') return 0;
+
+            return 0;
+            break;
+
+        case '/':
+            if(stack[top] == '-') return 0;
+            if(stack[top] == '+') return 0;
+            if(stack[top] == '*') return 0;
+            if(stack[top] == '/') return 0;
+            if(stack[top] == '^') return 1;
+
+            return 0;
+            break;
+
+        case '*':
+            if(stack[top] == '-') return 0;
+            if(stack[top] == '+') return 0;
+            if(stack[top] == '*') return 0;
+            if(stack[top] == '/') return 1;
+            if(stack[top] == '^') return 1;
+
+            return 0;
+            break;
+
+        case '+':
+            if(stack[top] == '-') return 0;
+            if(stack[top] == '+') return 0;
+            if(stack[top] == '*') return 1;
+            if(stack[top] == '/') return 1;
+            if(stack[top] == '^') return 1;
+
+            return 0;
+            break;
+
+        case '-':
+            if(stack[top] == '-') return 0;
+            if(stack[top] == '+') return 1;
+            if(stack[top] == '*') return 1;
+            if(stack[top] == '/') return 1;
+            if(stack[top] == '^') return 1;
+
+            return 0;
+            break;
+    }
 }
 
 
