@@ -1,6 +1,7 @@
 # For shunting-yard-algorithm
 /shunting-yard-algorithm/output
 /shunting-yard-algorithm/*.out
+/shunting-yard-algorithm/test*
 
 # For Stopwatch
 /Stopwatch/output

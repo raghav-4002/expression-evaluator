@@ -20,8 +20,8 @@ int top = -1;
 
 void read_input(void);
 void process_input(void);
-void input_to_postfix(void);
 void print_output(void);
+void input_to_postfix(void);
 void input_to_stack(void);
 void empty_stack(void);
 void stack_to_post(void);
@@ -58,6 +58,7 @@ process_input(void)
     stack[top] = '(';
 
     while(input[input_count] != '\n') {
+
         if(isalpha(input[input_count])) {
             input_to_postfix();
             input_count++;
@@ -134,8 +135,7 @@ handle_operand(void)
         stack_to_post();
     }
 
-    top++;
-    stack[top] = input[input_count];
+    input_to_stack();
 }
 
 
@@ -143,6 +143,8 @@ handle_operand(void)
 int
 is_lower_precedence(void)
 {
+    if(stack[top] == '(') return 0;
+
     switch(input[input_count]) {
         case '^':
             if(stack[top] == '-') return 0;
@@ -151,27 +153,24 @@ is_lower_precedence(void)
             if(stack[top] == '/') return 0;
             if(stack[top] == '^') return 0;
 
-            return 0;
             break;
 
         case '/':
             if(stack[top] == '-') return 0;
             if(stack[top] == '+') return 0;
-            if(stack[top] == '*') return 0;
             if(stack[top] == '/') return 0;
+            if(stack[top] == '*') return 1;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
 
         case '*':
             if(stack[top] == '-') return 0;
             if(stack[top] == '+') return 0;
             if(stack[top] == '*') return 0;
-            if(stack[top] == '/') return 1;
+            if(stack[top] == '/') return 0;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
 
         case '+':
@@ -181,7 +180,6 @@ is_lower_precedence(void)
             if(stack[top] == '/') return 1;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
 
         case '-':
@@ -191,7 +189,6 @@ is_lower_precedence(void)
             if(stack[top] == '/') return 1;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
     }
 }
