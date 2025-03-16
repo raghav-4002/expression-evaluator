@@ -2,10 +2,8 @@
 #include <ctype.h>
 
 
-
 #define ARRAY_SIZE 99
 #define STACK_SIZE 50
-
 
 
 char input[ARRAY_SIZE];
@@ -17,17 +15,15 @@ char stack[STACK_SIZE];
 int top = -1;
 
 
-
 void read_input(void);
 void process_input(void);
-void input_to_postfix(void);
 void print_output(void);
+void input_to_postfix(void);
 void input_to_stack(void);
 void empty_stack(void);
 void stack_to_post(void);
 void handle_operand(void);
 int is_lower_precedence(void);
-
 
 
 int
@@ -41,14 +37,12 @@ main(void)
 }
 
 
-
 void
 read_input(void)
 {
     printf("Enter the expression: ");
     fgets(input, ARRAY_SIZE, stdin);
 }
-
 
 
 void
@@ -58,6 +52,7 @@ process_input(void)
     stack[top] = '(';
 
     while(input[input_count] != '\n') {
+
         if(isalpha(input[input_count])) {
             input_to_postfix();
             input_count++;
@@ -87,7 +82,6 @@ process_input(void)
 }
 
 
-
 void
 input_to_postfix(void)
 {
@@ -96,14 +90,12 @@ input_to_postfix(void)
 }
 
 
-
 void 
 input_to_stack(void)
 {
     top++;
     stack[top] = input[input_count];
 }
-
 
 
 void
@@ -116,7 +108,6 @@ empty_stack(void)
 }
 
 
-
 void
 stack_to_post(void)
 {
@@ -126,7 +117,6 @@ stack_to_post(void)
 }
 
 
-
 void
 handle_operand(void)
 {
@@ -134,15 +124,15 @@ handle_operand(void)
         stack_to_post();
     }
 
-    top++;
-    stack[top] = input[input_count];
+    input_to_stack();
 }
-
 
 
 int
 is_lower_precedence(void)
 {
+    if(stack[top] == '(') return 0;
+
     switch(input[input_count]) {
         case '^':
             if(stack[top] == '-') return 0;
@@ -151,27 +141,24 @@ is_lower_precedence(void)
             if(stack[top] == '/') return 0;
             if(stack[top] == '^') return 0;
 
-            return 0;
             break;
 
         case '/':
             if(stack[top] == '-') return 0;
             if(stack[top] == '+') return 0;
-            if(stack[top] == '*') return 0;
             if(stack[top] == '/') return 0;
+            if(stack[top] == '*') return 1;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
 
         case '*':
             if(stack[top] == '-') return 0;
             if(stack[top] == '+') return 0;
             if(stack[top] == '*') return 0;
-            if(stack[top] == '/') return 1;
+            if(stack[top] == '/') return 0;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
 
         case '+':
@@ -181,7 +168,6 @@ is_lower_precedence(void)
             if(stack[top] == '/') return 1;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
 
         case '-':
@@ -191,11 +177,9 @@ is_lower_precedence(void)
             if(stack[top] == '/') return 1;
             if(stack[top] == '^') return 1;
 
-            return 0;
             break;
     }
 }
-
 
 
 void
