@@ -22,6 +22,10 @@ void read_input(void);
 void process_input(void);
 void input_to_postfix(void);
 void print_output(void);
+void input_to_stack(void);
+void empty_stack(void);
+void stack_to_post(void);
+void handle_operand(void);
 
 
 
@@ -52,7 +56,23 @@ process_input(void)
     while(input[input_count] != '\n') {
         if(isalpha(input[input_count])) {
             input_to_postfix();
+            input_count++;
+            continue;
         }
+
+        if(input[input_count] == '(') {
+            input_to_stack();
+            input_count++;
+            continue;
+        }
+
+        if(input[input_count] == ')') {
+            empty_stack();
+            input_count++;
+            continue;
+        }
+
+        handle_operand();
     }
 
     /* add null character at the end */
@@ -65,8 +85,45 @@ void
 input_to_postfix(void)
 {
     postfix[post_count] = input[input_count];
-    input_count++;
     post_count++;    
+}
+
+
+
+void 
+input_to_stack(void)
+{
+    top++;
+    stack[top] = input[input_count];
+}
+
+
+
+void
+empty_stack(void)
+{
+    while(stack[top] != '(') {
+        stack_to_post();
+    }
+    top--;
+}
+
+
+
+void
+stack_to_post(void)
+{
+    postfix[post_count] = stack[top];
+    post_count++;
+    top--;
+}
+
+
+
+void
+handle_operand(void)
+{
+
 }
 
 
