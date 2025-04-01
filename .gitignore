@@ -2,5 +2,3 @@
 */*.out* 
 */test*
 */notes*
-
-.gitignore

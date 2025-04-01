@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <time.h>   /* Only available for POSIX Compiliant systems */
 
 
 #define DIFFICULTY 0
@@ -8,14 +8,14 @@
 
 #define WELCOME_MSG 0
 #define DIFFICULTY_MSG 1
-#define PLAYIN_MSG 2
+#define DASH 2
 
 
-void print_message(int message_type);
 void choose_difficulty(void);
 void play(int attempts);
-int generate_number(void);
 void handle_input(int *number, int input_type);
+void print_message(int message_type);
+int generate_number(void);
 void clear_input_buffer(void);
 
 
@@ -41,8 +41,6 @@ main(void)
 
     return 0;
 }
-
-
 
 
 void
@@ -76,7 +74,7 @@ play(int attempts)
 {
     int guess, rand_number = generate_number();
 
-    print_message(PLAYIN_MSG);
+    print_message(DASH);
 
     do {
         printf("\nGuess the number (in %d attempts): ", attempts);
@@ -93,23 +91,23 @@ play(int attempts)
 
     if(guess == rand_number) {
         printf("\nCorrect! The number was indeed %d.\n", rand_number);
-        // printf("It took you %d attempts to guess the correct number\n", attempts + 1);
     } else {
-    printf("\nYou've ran out of all the attempts.\n");
-    printf("The correct number was %d\n", rand_number);
+        printf("\nYou've ran out of all the attempts.\n");
+        printf("The correct number was %d\n", rand_number);
     }
 
-    print_message(PLAYIN_MSG);
+    print_message(DASH);
 }
 
 
-/*Handle invalid input*/
+/* this function might be difficult to understand -- treat it like a blackbox */
 void
 handle_input(int *num, int input_type)
 {
     char term;
     
     if(input_type == DIFFICULTY) {
+        /* only end the loop if user enters a valid difficulty */
         while(scanf("%d%c", num, &term) != 2 || term != '\n'
                 || *num > 3 || *num < 1) {
 
@@ -117,16 +115,19 @@ handle_input(int *num, int input_type)
             print_message(DIFFICULTY_MSG);
 
             if(term != '\n') clear_input_buffer();
-            term = '\x1b';
+            term = '\x1b';  /* assign escape character to term, to solve a potential bug */
         }
     }
 
     if(input_type == GUESS) {
+        /* only end the loop if user enters a valid integer b/w 1 and 100 */
         while(scanf("%d%c", num, &term) != 2 || term != '\n'
                 || *num < 1 || *num > 100) {
-            printf("Please choose a valid number...\n");
+            printf("Please choose a valid number (between 1 and 100)...\n");
             printf("Try again: ");
-            clear_input_buffer();
+
+            if(term != '\n') clear_input_buffer();
+            term = '\x1b';
         }
     }
 }
@@ -139,30 +140,28 @@ print_message(int message_type)
         printf("\n------------------------------------------------------------\n");
         printf("\tWELCOME TO THE NUMBER GUESSING GAME\n");
         printf("You have to guess the correct number between 1 and 100.\n");
-        printf("\nEasy: 10 attempts; Medium: 7 attempts; Hard: 5 attempts\n");
     }
 
     if(message_type == DIFFICULTY_MSG) {
         printf("\n-----------------------------------------------------------\n");
+        printf("\nEasy: 10 attempts; Medium: 7 attempts; Hard: 5 attempts\n");
         printf("Choose difficulty (1: Easy, 2: Medium, 3: Hard): ");
 
     }
 
-    if(message_type == PLAYIN_MSG) {
+    if(message_type == DASH) {
          printf("\n------------------------------------------------------------\n");
     }
 }
 
 
-/*Generate a random number between 1 and 100*/
 int
 generate_number(void)
 {
-    return (rand() % 100) + 1;
+    return (rand() % 100) + 1;  /* generates a random number between 1 and 100 */
 }
 
 
-/*Clear input buffer*/
 void
 clear_input_buffer(void)
 {

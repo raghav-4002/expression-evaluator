@@ -1,6 +1,9 @@
 # A NUMBER GUESSING GAME IN C
 <br>
 
+**Updated the game recently to improve the code and solve few potential bugs.**
+**Modularized into functions to improve scalability**
+
 ## What is this?
 - A number guessing game, written in C that runs on the commandline.
 - My first official programming project :)
