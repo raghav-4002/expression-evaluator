@@ -1,22 +1,6 @@
-# For shunting-yard-algorithm
-/shunting-yard-algorithm/output
-/shunting-yard-algorithm/*.out
-/shunting-yard-algorithm/test*
+*/output
+*/*.out* 
+*/test*
+*/notes*
 
-# For Stopwatch
-/Stopwatch/output
-/Stopwatch/*.out 
-/Stopwatch/todo*
-/Stopwatch/test*
-
-#For Calculator
-/Simple Calculator/output
-/Simple Calculator/*.out
-/Simple Calculator/todo*
-/Simple Calculator/test*
-
-#For Number guessing game
-/Number Guessing Game/output
-/Number Guessing Game/*.out
-/Number Guessing Game/todo*
-/Number Guessing Game/test*
+.gitignore
