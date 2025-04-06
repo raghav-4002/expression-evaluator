@@ -5,9 +5,11 @@
 
 struct {
     struct termios orig_termios;
+    unsigned long seconds_elapsed;
 } attributes;
 
 
+void init_stopwatch(void);
 void enable_raw_mode(void);
 void disable_raw_mode(void);
 
@@ -15,9 +17,21 @@ void disable_raw_mode(void);
 int
 main(void)
 {
+    init_stopwatch();
+    
+    return 0;
+}
+
+
+void
+init_stopwatch(void)
+{
     enable_raw_mode();
 
-    return 0;
+    /* Hide the cursor */
+    write(STDOUT_FILENO, "\x1b[?25l", 6);
+
+    attributes.seconds_elapsed = 0;
 }
 
 
@@ -41,4 +55,7 @@ void
 disable_raw_mode(void)
 {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes.orig_termios);
+
+    /* Unhide the cursor */
+    write(STDOUT_FILENO, "\x1b[?25h", 6);
 }
