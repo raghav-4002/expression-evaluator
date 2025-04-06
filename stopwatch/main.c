@@ -1,4 +1,3 @@
-#include <asm-generic/ioctls.h>
 #include <termios.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -14,8 +13,10 @@ struct {
 
 
 void init_stopwatch(void);
-void display_time(void);
 void get_window_size(void);
+void display_time(void);
+void process_input(void);
+char read_input(void);
 void enable_raw_mode(void);
 void disable_raw_mode(void);
 
@@ -27,6 +28,7 @@ main(void)
 
     while(1) {
         display_time();
+        process_input(); 
     }
     
     return 0;
@@ -71,7 +73,7 @@ display_time(void)
                     attributes.window_length / 2, attributes.window_width / 2);
     write(STDOUT_FILENO, pos, len);
 
-    /* Clear the screen */
+    /* Clear the screen right to cursor */
     write(STDOUT_FILENO, "\x1b[K", 3);
 
     unsigned long hours, minutes;
@@ -94,6 +96,36 @@ display_time(void)
 
 
 void
+process_input(void)
+{
+    char ch = read_input();
+
+    switch(ch) {
+        case 'q':
+            exit(0);
+
+        case '\x1b':
+            attributes.seconds_elapsed++;
+    }
+
+}
+
+
+char
+read_input(void)
+{
+    char ch;
+    int nread;
+
+    nread = read(STDIN_FILENO, &ch, 1);
+
+    if(nread == 0) return '\x1b';
+
+    return ch;
+}
+
+
+void
 enable_raw_mode(void)
 {
     tcgetattr(STDIN_FILENO, &attributes.orig_termios);
@@ -103,6 +135,8 @@ enable_raw_mode(void)
 
     /* enable raw mode */
     raw.c_lflag &= ~(ECHO | ICANON);
+    raw.c_cc[VMIN] = 0;
+    raw.c_cc[VTIME] = 10;
 
     /* set updated terminal settings */
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
