@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <time.h>
+
+
+#define RUNNING 0
 
 
 struct {
@@ -15,6 +19,7 @@ struct {
 void init_stopwatch(void);
 void get_window_size(void);
 void display_time(void);
+void print_info(int status);
 void process_input(void);
 char read_input(void);
 void enable_raw_mode(void);
@@ -28,6 +33,7 @@ main(void)
 
     while(1) {
         display_time();
+        print_info(RUNNING);
         process_input(); 
     }
     
@@ -70,7 +76,7 @@ display_time(void)
     char pos[32];
     size_t len;
     len = snprintf(pos, sizeof(pos), "\x1b[%d;%dH", 
-                    attributes.window_length / 2, attributes.window_width / 2);
+                    attributes.window_length / 2 - 1, attributes.window_width / 2 - 1);
     write(STDOUT_FILENO, pos, len);
 
     /* Clear the screen right to cursor */
@@ -96,18 +102,25 @@ display_time(void)
 
 
 void
+print_info(int status)
+{
+    write(STDOUT_FILENO, "\nPress 'q' to quit", 18);
+}
+
+
+void
 process_input(void)
 {
+    struct timespec start, end;
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
     char ch = read_input();
+    clock_gettime(CLOCK_MONOTONIC, &end);
 
-    switch(ch) {
-        case 'q':
-            exit(0);
+    if(ch == 'q' || ch == 'Q') exit(0);
 
-        case '\x1b':
-            attributes.seconds_elapsed++;
-    }
-
+    struct timespec wait_time = {end.tv_sec - start.tv_sec, end.tv_nsec - start.tv_nsec};
+    nanosleep(&wait_time, NULL);
 }
 
 
