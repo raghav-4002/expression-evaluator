@@ -5,6 +5,9 @@
 #include <sys/ioctl.h>
 
 
+#define RUNNING 0
+
+
 struct {
     struct termios orig_termios;
     unsigned long seconds_elapsed;
@@ -15,6 +18,7 @@ struct {
 void init_stopwatch(void);
 void get_window_size(void);
 void display_time(void);
+void print_info(int status);
 void process_input(void);
 char read_input(void);
 void enable_raw_mode(void);
@@ -28,6 +32,7 @@ main(void)
 
     while(1) {
         display_time();
+        print_info(RUNNING);
         process_input(); 
     }
     
@@ -70,7 +75,7 @@ display_time(void)
     char pos[32];
     size_t len;
     len = snprintf(pos, sizeof(pos), "\x1b[%d;%dH", 
-                    attributes.window_length / 2, attributes.window_width / 2);
+                    attributes.window_length / 2 - 1, attributes.window_width / 2 - 1);
     write(STDOUT_FILENO, pos, len);
 
     /* Clear the screen right to cursor */
@@ -92,6 +97,13 @@ display_time(void)
 
     /* write the time */
     write(STDOUT_FILENO, display_string, string_len);
+}
+
+
+void
+print_info(int status)
+{
+    write(STDOUT_FILENO, "\nPress 'q' to quit", 18);
 }
 
 
