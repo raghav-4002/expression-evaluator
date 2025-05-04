@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <time.h>
+
+
+#define RUNNING 0
 
 
 #define RUNNING 0
@@ -110,16 +114,16 @@ print_info(int status)
 void
 process_input(void)
 {
+    struct timespec start, end;
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
     char ch = read_input();
+    clock_gettime(CLOCK_MONOTONIC, &end);
 
-    switch(ch) {
-        case 'q':
-            exit(0);
+    if(ch == 'q' || ch == 'Q') exit(0);
 
-        case '\x1b':
-            attributes.seconds_elapsed++;
-    }
-
+    struct timespec wait_time = {end.tv_sec - start.tv_sec, end.tv_nsec - start.tv_nsec};
+    nanosleep(&wait_time, NULL);
 }
 
 
