@@ -1,4 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+void
+display_prompt (void)
+{
+  printf ("Enter the expression: ");
+}
 
 /*
  * Inputs a single line from user via stdin
@@ -23,7 +30,13 @@ main (void)
 {
   char *raw_input = NULL;
 
-  raw_input = input ();
+  while (1)
+    {
+      display_prompt ();
+      raw_input = input ();
+
+      free (raw_input);
+    }
 
   return 0;
 }
