@@ -19,6 +19,21 @@ input (void)
 
   ssize_t line_len = getline (&raw_input, &n, stdin);
 
+  /*
+   * In case of error or user pressing enter without
+   * writing anything, free the `raw_input` buffer
+   * and return NULL
+   */
+  if (line_len == 1 || line_len == -1)
+    {
+      if (line_len == -1)
+        perror (NULL);
+
+      free (raw_input);
+
+      return NULL;
+    }
+
   /* Remove newline from `raw_input` */
   raw_input[line_len - 1] = '\0';
 
@@ -34,6 +49,9 @@ main (void)
     {
       display_prompt ();
       raw_input = input ();
+
+      if (!raw_input)
+        continue;
 
       free (raw_input);
     }
