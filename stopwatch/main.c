@@ -1,6 +1,36 @@
+#include <stdlib.h>
+#include <termios.h>
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h>
+
+
+struct termios orig_termios;
+
+
+void
+setup_terminal(void)
+{
+    /* Get terminal attributes */
+    tcgetattr(STDIN_FILENO, &orig_termios);
+
+    struct termios raw = orig_termios;
+
+    /* Enable non-cannonical mode */
+    raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN | CS8);
+	  raw.c_iflag &= ~(IXON | ICRNL | BRKINT | INPCK | ISTRIP);
+	  raw.c_oflag &= ~(OPOST);
+	  raw.c_cflag |= (CS8);
+
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
+
+
+void
+reset_terminal(void)
+{
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+}
 
 
 void
@@ -29,5 +59,7 @@ init_stopwatch(void)
 int
 main(void)
 {
+    setup_terminal();
+    atexit(reset_terminal);
     init_stopwatch();
 }
