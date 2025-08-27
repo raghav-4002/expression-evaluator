@@ -24,7 +24,7 @@ setup_terminal(void)
 	  raw.c_cflag |= (CS8);
 
     raw.c_cc[VMIN]  = 0;
-    raw.c_cc[VTIME] = 10;
+    raw.c_cc[VTIME] = 1;
 
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
@@ -40,6 +40,7 @@ reset_terminal(void)
 void
 print_elapsed_time(time_t elapsed_seconds)
 {
+    system("clear");
     printf("%lu\n", elapsed_seconds);
 }
 
@@ -61,15 +62,11 @@ complete_one_sec(struct timespec *start, struct timespec *end)
 #define BUF_SIZE 1
 
 void
-process_input(char *buf, struct timespec *start, struct timespec *end)
+process_input(char *buf)
 {
     switch (buf[0]) {
         case 'q':
             exit(EXIT_SUCCESS);
-            break;
-
-        default:
-            complete_one_sec(start, end);
             break;
     }
 }
@@ -80,14 +77,8 @@ read_input(void)
 {
     char buf[BUF_SIZE];
 
-    struct timespec start = {0, 0};
-    struct timespec end   = {0, 0};
-
-    clock_gettime(CLOCK_MONOTONIC, &start);
     int ret_val = read(STDIN_FILENO, buf, sizeof(buf));
-    clock_gettime(CLOCK_MONOTONIC, &end);
-
-    if (ret_val) process_input(buf, &start, &end);
+    if (ret_val) process_input(buf);
 }
 
 
@@ -102,7 +93,6 @@ init_stopwatch(void)
     while (1) {
         read_input();
         clock_gettime(CLOCK_MONOTONIC, &end);
-
         print_elapsed_time(end.tv_sec - start.tv_sec);
     }
 }
