@@ -1,3 +1,4 @@
+#include <bits/time.h>
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
@@ -43,11 +44,13 @@ print_elapsed_time(time_t elapsed_seconds)
 }
 
 
+#define ONE_SECOND 1000000000
+
 void
 complete_one_sec(struct timespec *start, struct timespec *end)
 {
-    long elapsed_nano_sec = end->tv_nsec - start->tv_sec;
-    long remaining_nano_sec = 1000000000 - elapsed_nano_sec;
+    long elapsed_nano_sec   = end->tv_nsec - start->tv_sec;
+    long remaining_nano_sec = ONE_SECOND - elapsed_nano_sec;
 
     struct timespec ts = {0, remaining_nano_sec};
 
@@ -76,12 +79,15 @@ void
 read_input(void)
 {
     char buf[BUF_SIZE];
-    
-    struct timespec start;
-    int ret_val = read(STDIN_FILENO, buf, sizeof(buf));
-    struct timespec end;
 
-    if (!ret_val) process_input(buf, &start, &end);
+    struct timespec start = {0, 0};
+    struct timespec end   = {0, 0};
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    int ret_val = read(STDIN_FILENO, buf, sizeof(buf));
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    if (ret_val) process_input(buf, &start, &end);
 }
 
 
@@ -96,6 +102,7 @@ init_stopwatch(void)
     while (1) {
         read_input();
         clock_gettime(CLOCK_MONOTONIC, &end);
+
         print_elapsed_time(end.tv_sec - start.tv_sec);
     }
 }
