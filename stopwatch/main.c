@@ -10,6 +10,12 @@ struct termios orig_termios;
 unsigned short col_size;
 unsigned short row_size;
 
+struct Elapsed_time {
+    long sec;
+    long min;
+    long hour;
+};
+
 
 void
 unhide_cursor(void)
@@ -86,25 +92,36 @@ init_terminal(void)
 
 
 void
-print_elapsed_time(time_t elapsed_seconds)
+recenter_cursor(void)
 {
-    clear_screen();
     printf("\x1b[%d;%dH", row_size / 2, col_size / 2);
-    printf("%lu\n", elapsed_seconds);
 }
 
 
-#define ONE_SECOND 1000000000
+struct Elapsed_time
+calculate_elapsed_time(time_t elapsed_seconds)
+{
+    long min = elapsed_seconds / 60;
+    long hour = min / 60;
+
+    long sec = elapsed_seconds % 60;
+    min %= 60;
+
+    struct Elapsed_time time = {sec, min, hour};
+
+    return time;
+}
+
 
 void
-complete_one_sec(struct timespec *start, struct timespec *end)
+print_elapsed_time(time_t elapsed_seconds)
 {
-    long elapsed_nano_sec   = end->tv_nsec - start->tv_sec;
-    long remaining_nano_sec = ONE_SECOND - elapsed_nano_sec;
+    clear_screen();
+    recenter_cursor();
 
-    struct timespec ts = {0, remaining_nano_sec};
+    struct Elapsed_time time = calculate_elapsed_time(elapsed_seconds);
 
-    nanosleep(&ts, NULL);
+    printf("%.2ld:%.2ld:%.2ld\n", time.hour, time.min, time.sec);
 }
 
 
