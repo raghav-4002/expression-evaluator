@@ -1,4 +1,4 @@
-#include <bits/time.h>
+#include <sys/ioctl.h>
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
@@ -7,10 +7,52 @@
 
 
 struct termios orig_termios;
+unsigned short col_size;
+unsigned short row_size;
 
 
 void
-setup_terminal(void)
+unhide_cursor(void)
+{
+    printf("\x1b[?25h");
+}
+
+
+void
+reset_terminal(void)
+{
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+    unhide_cursor();
+}
+
+
+void
+hide_cursor(void)
+{
+    printf("\x1b[?25l");
+}
+
+
+void
+clear_screen(void)
+{
+    printf("\x1b[2J");
+}
+
+
+void
+get_window_size(void)
+{
+    struct winsize ws;
+
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
+    col_size = ws.ws_col;
+    row_size = ws.ws_row;
+}
+
+
+void
+enable_raw_mode(void)
 {
     /* Get terminal attributes */
     tcgetattr(STDIN_FILENO, &orig_termios);
@@ -31,16 +73,23 @@ setup_terminal(void)
 
 
 void
-reset_terminal(void)
+init_terminal(void)
 {
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+    enable_raw_mode();
+
+    get_window_size();
+    clear_screen();
+    hide_cursor();
+
+    atexit(reset_terminal);
 }
 
 
 void
 print_elapsed_time(time_t elapsed_seconds)
 {
-    system("clear");
+    clear_screen();
+    printf("\x1b[%d;%dH", row_size / 2, col_size / 2);
     printf("%lu\n", elapsed_seconds);
 }
 
@@ -101,7 +150,7 @@ init_stopwatch(void)
 int
 main(void)
 {
-    setup_terminal();
-    atexit(reset_terminal);
+    init_terminal();
+    // printf("Column size: %d\nRow size: %d\n", col_size, row_size);
     init_stopwatch();
 }
