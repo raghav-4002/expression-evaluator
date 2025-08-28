@@ -6,9 +6,27 @@
 #include <stdio.h>
 
 
-struct termios orig_termios;
-unsigned short col_size;
-unsigned short row_size;
+struct Term_parameters {
+    struct termios orig_termios;
+    unsigned short col_size;
+    unsigned short row_size;
+};
+
+struct Term_parameters term_parameters;
+
+
+struct Time_parameters {
+    struct timespec start;
+    struct timespec end;
+};
+
+struct Time_parameters time_parameters = {
+    /* start */
+    {0, 0},
+
+    /* end */
+    {0, 0},
+};
 
 struct Elapsed_time {
     long sec;
@@ -27,7 +45,9 @@ unhide_cursor(void)
 void
 reset_terminal(void)
 {
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+    /* Disable raw mode */
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &(term_parameters.orig_termios));
+
     unhide_cursor();
 }
 
@@ -52,8 +72,8 @@ get_window_size(void)
     struct winsize ws;
 
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-    col_size = ws.ws_col;
-    row_size = ws.ws_row;
+    term_parameters.col_size = ws.ws_col;
+    term_parameters.row_size = ws.ws_row;
 }
 
 
@@ -61,9 +81,9 @@ void
 enable_raw_mode(void)
 {
     /* Get terminal attributes */
-    tcgetattr(STDIN_FILENO, &orig_termios);
+    tcgetattr(STDIN_FILENO, &(term_parameters.orig_termios));
 
-    struct termios raw = orig_termios;
+    struct termios raw = term_parameters.orig_termios;
 
     /* Enable non-cannonical mode */
     raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN | CS8);
@@ -94,6 +114,9 @@ init_terminal(void)
 void
 recenter_cursor(void)
 {
+    unsigned short row_size = term_parameters.row_size;
+    unsigned short col_size = term_parameters.col_size;
+
     printf("\x1b[%d;%dH", row_size / 2, col_size / 2);
 }
 
@@ -168,6 +191,5 @@ int
 main(void)
 {
     init_terminal();
-    // printf("Column size: %d\nRow size: %d\n", col_size, row_size);
     init_stopwatch();
 }
