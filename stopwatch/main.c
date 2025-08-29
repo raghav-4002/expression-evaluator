@@ -1,3 +1,4 @@
+#include <bits/time.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <termios.h>
@@ -5,6 +6,8 @@
 #include <time.h>
 #include <stdio.h>
 
+
+/* ========== Global variables ========== */
 
 struct Term_parameters {
     struct termios orig_termios;
@@ -15,18 +18,18 @@ struct Term_parameters {
 struct Term_parameters term_parameters;
 
 
-struct Time_parameters {
-    struct timespec start;
-    struct timespec end;
-};
+typedef enum {
+    RUNNING,
+    PAUSED,
+} Running_status;
 
-struct Time_parameters time_parameters = {
-    /* start */
-    {0, 0},
+Running_status status;
 
-    /* end */
-    {0, 0},
-};
+
+struct timespec start;
+struct timespec end;
+
+time_t elapsed_seconds;
 
 struct Elapsed_time {
     long sec;
@@ -34,6 +37,8 @@ struct Elapsed_time {
     long hour;
 };
 
+
+/* ========== Helper functions ========== */
 
 void
 unhide_cursor(void)
@@ -66,6 +71,7 @@ clear_screen(void)
 }
 
 
+/* ========== Terminal-related functions ========== */
 void
 get_window_size(void)
 {
@@ -121,6 +127,8 @@ recenter_cursor(void)
 }
 
 
+/* ========== Stopwatch-related funcitons ========== */
+
 struct Elapsed_time
 calculate_elapsed_time(time_t elapsed_seconds)
 {
@@ -148,6 +156,20 @@ print_elapsed_time(time_t elapsed_seconds)
 }
 
 
+void
+invert_running_status(void)
+{
+    if (status == RUNNING) {
+        status = PAUSED;
+    }
+
+    else if (status == PAUSED) {
+        status = RUNNING;
+        clock_gettime(CLOCK_MONOTONIC, &start);
+    }
+}
+
+
 #define BUF_SIZE 1
 
 void
@@ -156,6 +178,10 @@ process_input(char *buf)
     switch (buf[0]) {
         case 'q':
             exit(EXIT_SUCCESS);
+            break;
+
+        case ' ':
+            invert_running_status();
             break;
     }
 }
@@ -174,15 +200,21 @@ read_input(void)
 void
 init_stopwatch(void)
 {
-    struct timespec start = {0, 0};
-    struct timespec end   = {0, 0};
+    status = RUNNING;
+    elapsed_seconds = 0;
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (1) {
         read_input();
         clock_gettime(CLOCK_MONOTONIC, &end);
-        print_elapsed_time(end.tv_sec - start.tv_sec);
+
+        if (end.tv_sec - start.tv_sec && status == RUNNING) {
+            elapsed_seconds++;
+            clock_gettime(CLOCK_MONOTONIC, &start);
+        }
+
+        print_elapsed_time(elapsed_seconds);
     }
 }
 
