@@ -21,6 +21,7 @@ struct Term_parameters term_parameters;
 typedef enum {
     RUNNING,
     PAUSED,
+
 } Running_status;
 
 Running_status status;
@@ -29,7 +30,6 @@ Running_status status;
 struct timespec start;
 struct timespec end;
 
-time_t elapsed_seconds;
 
 struct Elapsed_time {
     long sec;
@@ -118,12 +118,9 @@ init_terminal(void)
 
 
 void
-recenter_cursor(void)
+recenter_cursor(unsigned short row_pos, unsigned short col_pos)
 {
-    unsigned short row_size = term_parameters.row_size;
-    unsigned short col_size = term_parameters.col_size;
-
-    printf("\x1b[%d;%dH", row_size / 2, col_size / 2);
+    printf("\x1b[%d;%dH", row_pos, col_pos);
 }
 
 
@@ -147,12 +144,48 @@ calculate_elapsed_time(time_t elapsed_seconds)
 void
 print_elapsed_time(time_t elapsed_seconds)
 {
-    clear_screen();
-    recenter_cursor();
+    recenter_cursor(term_parameters.row_size / 2, term_parameters.col_size / 2);
 
     struct Elapsed_time time = calculate_elapsed_time(elapsed_seconds);
 
-    printf("%.2ld:%.2ld:%.2ld\n", time.hour, time.min, time.sec);
+    printf("%.2ld:%.2ld:%.2ld", time.hour, time.min, time.sec);
+    fflush(stdout);
+}
+
+
+void
+print_quit_msg(void)
+{
+    recenter_cursor((term_parameters.row_size / 2) + 1, term_parameters.col_size / 2);
+    printf("q: To quit");
+    fflush(stdout);
+}
+
+
+void
+print_status_msg(Running_status status)
+{
+    recenter_cursor((term_parameters.row_size / 2) + 2, term_parameters.col_size / 2);
+
+    // TODO: do something smarter instead of this innocent if-else clause
+    if (status == PAUSED) {
+        printf("space: To continue");
+    }
+    else {
+        printf("space: To pause");
+    }
+    fflush(stdout);
+}
+
+
+void
+display_output(time_t elapsed_seconds, Running_status status)
+{
+    // TODO: Replace calls to `printf` with `write`
+    clear_screen();
+    print_elapsed_time(elapsed_seconds);
+    print_quit_msg();
+    print_status_msg(status);
 }
 
 
@@ -201,11 +234,12 @@ void
 init_stopwatch(void)
 {
     status = RUNNING;
-    elapsed_seconds = 0;
+    time_t elapsed_seconds = 0;
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (1) {
+        display_output(elapsed_seconds, status);
         read_input();
         clock_gettime(CLOCK_MONOTONIC, &end);
 
@@ -213,8 +247,6 @@ init_stopwatch(void)
             elapsed_seconds++;
             clock_gettime(CLOCK_MONOTONIC, &start);
         }
-
-        print_elapsed_time(elapsed_seconds);
     }
 }
 
