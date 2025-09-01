@@ -1,3 +1,4 @@
+#include <bits/time.h>
 #include <stdbool.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
@@ -23,11 +24,6 @@ typedef enum {
     PAUSED,
 
 } Running_status;
-
-
-
-struct timespec start;
-struct timespec end;
 
 
 struct Elapsed_time {
@@ -189,7 +185,7 @@ display_output(time_t elapsed_seconds, Running_status status)
 
 
 void
-invert_running_status(Running_status *status)
+flip_running_status(Running_status *status)
 {
     if (*status == RUNNING) {
         *status = PAUSED;
@@ -204,7 +200,7 @@ invert_running_status(Running_status *status)
 #define BUF_SIZE 1
 
 bool
-process_input(char *buf, Running_status *status)
+process_input(char *buf)
 {
     switch (buf[0]) {
         case 'q':
@@ -212,7 +208,6 @@ process_input(char *buf, Running_status *status)
             break;
 
         case ' ':
-            invert_running_status(status);
             return true;
             break;
     }
@@ -231,11 +226,16 @@ read_input(char **buf)
 void
 init_stopwatch(void)
 {
-    Running_status status = RUNNING;
-    time_t elapsed_seconds = 0;
-    char *buf = malloc(BUF_SIZE * sizeof(*buf));
-    bool status_is_inverted;
+    /* Time keeping variables */
+    struct timespec start;
+    struct timespec end;
 
+    Running_status status  = RUNNING;
+    time_t elapsed_seconds = 0;
+
+    char *buf = malloc(BUF_SIZE * sizeof(*buf));
+
+    /* Initialize the starting clock */
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (1) {
@@ -243,16 +243,17 @@ init_stopwatch(void)
         int bytes_read = read_input(&buf);
 
         if (bytes_read) {
-            status_is_inverted = process_input(buf, &status);
-        }
+            bool need_to_flip_status = process_input(buf);
 
-        if (status_is_inverted) {
-            clock_gettime(CLOCK_MONOTONIC, &start);
+            if (need_to_flip_status) {
+                flip_running_status(&status);
+                clock_gettime(CLOCK_MONOTONIC, &start);
+            }
         }
 
         clock_gettime(CLOCK_MONOTONIC, &end);
 
-        if (end.tv_sec - start.tv_sec && status == RUNNING) {
+        if (end.tv_sec - start.tv_sec == 1 && status == RUNNING) {
             elapsed_seconds++;
             clock_gettime(CLOCK_MONOTONIC, &start);
         }
