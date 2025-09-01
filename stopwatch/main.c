@@ -1,4 +1,4 @@
-#include <bits/time.h>
+#include <stdbool.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <termios.h>
@@ -24,7 +24,6 @@ typedef enum {
 
 } Running_status;
 
-Running_status status;
 
 
 struct timespec start;
@@ -190,23 +189,22 @@ display_output(time_t elapsed_seconds, Running_status status)
 
 
 void
-invert_running_status(void)
+invert_running_status(Running_status *status)
 {
-    if (status == RUNNING) {
-        status = PAUSED;
+    if (*status == RUNNING) {
+        *status = PAUSED;
     }
 
-    else if (status == PAUSED) {
-        status = RUNNING;
-        clock_gettime(CLOCK_MONOTONIC, &start);
+    else if (*status == PAUSED) {
+        *status = RUNNING;
     }
 }
 
 
 #define BUF_SIZE 1
 
-void
-process_input(char *buf)
+bool
+process_input(char *buf, Running_status *status)
 {
     switch (buf[0]) {
         case 'q':
@@ -214,33 +212,44 @@ process_input(char *buf)
             break;
 
         case ' ':
-            invert_running_status();
+            invert_running_status(status);
+            return true;
             break;
     }
+
+    return false;
 }
 
 
-void
-read_input(void)
+int
+read_input(char **buf)
 {
-    char buf[BUF_SIZE];
-
-    int ret_val = read(STDIN_FILENO, buf, sizeof(buf));
-    if (ret_val) process_input(buf);
+    return read(STDIN_FILENO, *buf, BUF_SIZE);
 }
 
 
 void
 init_stopwatch(void)
 {
-    status = RUNNING;
+    Running_status status = RUNNING;
     time_t elapsed_seconds = 0;
+    char *buf = malloc(BUF_SIZE * sizeof(*buf));
+    bool status_is_inverted;
 
     clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (1) {
         display_output(elapsed_seconds, status);
-        read_input();
+        int bytes_read = read_input(&buf);
+
+        if (bytes_read) {
+            status_is_inverted = process_input(buf, &status);
+        }
+
+        if (status_is_inverted) {
+            clock_gettime(CLOCK_MONOTONIC, &start);
+        }
+
         clock_gettime(CLOCK_MONOTONIC, &end);
 
         if (end.tv_sec - start.tv_sec && status == RUNNING) {
