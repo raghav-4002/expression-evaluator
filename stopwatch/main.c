@@ -224,6 +224,20 @@ read_input(char **buf)
 
 
 void
+reset_start(struct timespec *start)
+{
+    clock_gettime(CLOCK_MONOTONIC, start);
+}
+
+
+void
+update_end(struct timespec *end)
+{
+    clock_gettime(CLOCK_MONOTONIC, end);
+}
+
+
+void
 init_stopwatch(void)
 {
     /* Time keeping variables */
@@ -236,7 +250,7 @@ init_stopwatch(void)
     char *buf = malloc(BUF_SIZE * sizeof(*buf));
 
     /* Initialize the starting clock */
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    reset_start(&start);
 
     while (1) {
         display_output(elapsed_seconds, status);
@@ -247,15 +261,16 @@ init_stopwatch(void)
 
             if (need_to_flip_status) {
                 flip_running_status(&status);
-                clock_gettime(CLOCK_MONOTONIC, &start);
+                reset_start(&start);
             }
         }
 
-        clock_gettime(CLOCK_MONOTONIC, &end);
+        update_end(&end);
 
-        if (end.tv_sec - start.tv_sec == 1 && status == RUNNING) {
+        /* After every 1 second, increment elapsed_seconds and reset start */
+        if (status == RUNNING && end.tv_sec - start.tv_sec == 1) {
             elapsed_seconds++;
-            clock_gettime(CLOCK_MONOTONIC, &start);
+            reset_start(&start);
         }
     }
 }
