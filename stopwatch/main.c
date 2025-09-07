@@ -165,10 +165,13 @@ print_status_msg(Running_status status)
     // TODO: do something smarter instead of this innocent if-else clause
     if (status == PAUSED) {
         printf("space: To continue");
+        recenter_cursor((term_parameters.row_size / 2) + 3, term_parameters.col_size / 2);
+        printf("r: To reset");
     }
     else {
         printf("space: To pause");
     }
+
     fflush(stdout);
 }
 
@@ -178,6 +181,7 @@ display_output(time_t elapsed_seconds, Running_status status)
 {
     // TODO: Replace calls to `printf` with `write`
     clear_screen();
+
     print_elapsed_time(elapsed_seconds);
     print_quit_msg();
     print_status_msg(status);
@@ -190,7 +194,6 @@ flip_running_status(Running_status *status)
     if (*status == RUNNING) {
         *status = PAUSED;
     }
-
     else if (*status == PAUSED) {
         *status = RUNNING;
     }
@@ -198,23 +201,6 @@ flip_running_status(Running_status *status)
 
 
 #define BUF_SIZE 1
-
-bool
-process_input(char *buf)
-{
-    switch (buf[0]) {
-        case 'q':
-            exit(EXIT_SUCCESS);
-            break;
-
-        case ' ':
-            return true;
-            break;
-    }
-
-    return false;
-}
-
 
 int
 read_input(char **buf)
@@ -257,11 +243,17 @@ init_stopwatch(void)
         int bytes_read = read_input(&buf);
 
         if (bytes_read) {
-            bool need_to_flip_status = process_input(buf);
-
-            if (need_to_flip_status) {
-                flip_running_status(&status);
-                reset_start(&start);
+            switch (buf[0]) {
+                case 'q':
+                    exit(EXIT_SUCCESS);
+                    break;
+                case ' ':
+                    flip_running_status(&status);
+                    reset_start(&start);
+                    break;
+                case 'r':
+                    if (status == PAUSED) elapsed_seconds = 0;
+                    break;
             }
         }
 
