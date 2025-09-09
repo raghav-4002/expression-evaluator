@@ -123,6 +123,7 @@ scan_token(struct Parameters *parameters)
 
         case '*':
             err_return = add_token(parameters, STAR);
+            break;
 
         case '/':
             err_return = add_token(parameters, SLASH);
@@ -171,7 +172,7 @@ tokenize(char *input)
 {
     /*
      * A pointer to structure `Parameters`
-     
+
      * Members of `struct Parameters`
 
      * `Token *tokens`  : a pointer to an array of tokens.
@@ -185,7 +186,7 @@ tokenize(char *input)
      */
     struct Parameters *parameters = malloc(sizeof(*parameters));
 
-    if (parameters == NULL) return NULL;
+    if (!parameters) return NULL;
 
     init_parameters(parameters, input);
 

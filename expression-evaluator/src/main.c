@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "lexer/lexer.h"
-#include "io_handling/input.h"
+#include "io-handling/input.h"
 #include "lexer/token.h"
 
 int
