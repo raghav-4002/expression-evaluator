@@ -1,13 +1,13 @@
 #include <stdio.h>
 
 #include "lexer/lexer.h"
-#include "input.h"
+#include "io_handling/input.h"
 #include "lexer/token.h"
 
 int
 main(void)
 {
-    char *string = get_user_input();
+    char *string = read_from_stdin();
 
     Token *tokens = tokenize(string);
 
