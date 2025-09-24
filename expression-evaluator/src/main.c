@@ -42,7 +42,7 @@ main(void)
                 break;
 
             case NUMBER:
-                printf("%lf\n", tokens[i].number);
+                printf("%lf\n", tokens[i].value);
                 break;
         }
     }

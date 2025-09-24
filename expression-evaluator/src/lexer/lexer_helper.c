@@ -70,7 +70,7 @@ void
 init_token(Token *token, Token_type type)
 {
     token->type          = type;
-    token->number        = 0;
+    token->value         = 0;
 }
 
 

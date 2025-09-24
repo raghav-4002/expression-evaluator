@@ -32,7 +32,7 @@ add_number(struct Parameters *parameters)
     size_t end       = parameters->current;
     size_t cur_index = parameters->arr_size - 1;
 
-    parameters->tokens[cur_index].number = extract_number(string, start, end);
+    parameters->tokens[cur_index].value = extract_number(string, start, end);
 
     return 0;
 }
@@ -116,34 +116,27 @@ scan_token(struct Parameters *parameters)
         case '+':
             err_return = add_token(parameters, PLUS);
             break;
-
         case '-':
             err_return = add_token(parameters, MINUS);
             break;
-
         case '*':
             err_return = add_token(parameters, STAR);
             break;
-
         case '/':
             err_return = add_token(parameters, SLASH);
             break;
-
         case '^':
             err_return = add_token(parameters, POWER);
             break;
-
         case '(':
             err_return = add_token(parameters, LEFT_PAREN);
             break;
-
         case ')':
             err_return = add_token(parameters, RIGHT_PAREN);
-
         case ' ': case '\n': case '\t':
             break;
 
-        /* Command tokens */
+        /* Number tokens */
         default:
             if (c >= '0' && c <= '9') {
                 err_return = handle_number(parameters);
