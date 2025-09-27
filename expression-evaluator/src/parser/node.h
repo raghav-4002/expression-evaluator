@@ -19,5 +19,13 @@ typedef struct Tree_node
 
 } Tree_node;
 
+/*
+expression -> factor (("+" | "-") factor)* ;
+factor     -> exponent (("*" | "/") exponent)* ;
+exponent   -> primary ("^" primary)* ;
+primary    -> NUMBER
+			      | "(" expression ")" ;
+*/
+
 
 #endif // NODE_H_

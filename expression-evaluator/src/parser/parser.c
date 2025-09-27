@@ -1,46 +1,28 @@
 #include <stdlib.h>
 
-#include "parser.h"
+#include "node.h"
+#include "parser_helper.h"
 
 
 Tree_node *
-parse_factor(Token *tokens, size_t start, size_t end)
+parse_factor(Token *tokens, size_t *current)
 {
-    size_t i = start;
 
-    while (tokens[i].type != STAR && tokens[i].type != SLASH
-        && tokens[i].type != NIL) {
-
-        i++;
-    }
-
-    if (tokens[i].type == NIL) {
-        return parse_exponent(tokens);
-    }
 }
 
 
 Tree_node *
 parse_expression(Token *tokens)
 {
-    size_t i = 0;
+    size_t current  = 0;
+    Tree_node *expr = parse_factor(tokens, &current);
 
-    while (tokens[i].type != PLUS && tokens[i].type != MINUS
-        && tokens[i].type != NIL) {
+    while (match_additive(tokens, &current)) {
+        Node_type operator = previous(tokens, current);
+        Tree_node *right   = parse_factor(tokens, &current);
 
-        i++;
+        expr = init_node(expr, operator, right);
     }
 
-    /* If end of tokens is reached, simply
-     * return the tree of factor */
-    if (tokens[i].type == NIL) {
-        return parse_factor(tokens);
-    }
-}
-
-
-Tree_node *
-parse(Token *tokens)
-{
-    return parse_expression(tokens);
+    return expr;
 }
