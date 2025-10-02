@@ -45,7 +45,8 @@ main(void)
 {
     char *string = read_from_stdin();
     Token *tokens = tokenize(string);
-    Tree_node *ast_root = parse_expression(tokens);
+    size_t current = 0;
+    Tree_node *ast_root = parse_expression(tokens, &current);
 
     printf("=====================Parsed tokens===================\n");
     for (size_t i = 0; tokens[i].type != NIL; i++) {

@@ -1,16 +1,18 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "node.h"
 #include "parser_helper.h"
 
 // TODO: Handle invalid syntax and parsing errors
+// TODO: Add parsing support for unary operator (- and +)
+
+Tree_node *parse_expression(Token *tokens, size_t *current);
 
 
 Tree_node *
 parse_primary(Token *tokens, size_t *current)
 {
-    //  TODO: Add parsing for parenthesis
-
     Token current_token = tokens[*current];
     Token_type current_token_type = current_token.type;
 
@@ -22,6 +24,20 @@ parse_primary(Token *tokens, size_t *current)
         leaf->value = current_token.value;
 
         return leaf;
+    }
+
+    if (current_token_type == LEFT_PAREN) {
+        *current += 1;
+
+        Tree_node *expr = parse_expression(tokens, current);
+
+        /* If no closing parenthesis was found */
+        if (tokens[*current].type != RIGHT_PAREN) {
+            fprintf(stderr, "Syntax Error\n");
+            return NULL;
+        }
+
+        return expr;
     }
 }
 
@@ -59,14 +75,13 @@ parse_factor(Token *tokens, size_t *current)
 
 
 Tree_node *
-parse_expression(Token *tokens)
+parse_expression(Token *tokens, size_t *current)
 {
-    size_t current  = 0;
-    Tree_node *expr = parse_factor(tokens, &current);
+    Tree_node *expr = parse_factor(tokens, current);
 
-    while (match_additive(tokens, &current)) {
-        Node_type operator = previous(tokens, current);
-        Tree_node *right   = parse_factor(tokens, &current);
+    while (match_additive(tokens, current)) {
+        Node_type operator = previous(tokens, *current);
+        Tree_node *right   = parse_factor(tokens, current);
 
         expr = init_node(expr, operator, right);
     }
