@@ -20,17 +20,13 @@ init_node(Tree_node *expr, Node_type type, Tree_node *right)
 bool
 match_additive(Token *tokens, size_t *current)
 {
-    /* Move to the next token */
-    *current += 1;
+    Token_type current_token_type = tokens[*current].type;
 
-    size_t prev = (*current) - 1;
-    Token_type prev_token_type = tokens[prev].type;
-
-    switch (prev_token_type) {
+    switch (current_token_type) {
         case PLUS: case MINUS:
+            *current += 1;
             return true;
 
-        /* false in all cases, including for last token (NIL) */
         default:
             return false;
     }
@@ -40,14 +36,11 @@ match_additive(Token *tokens, size_t *current)
 bool
 match_factor(Token *tokens, size_t *current)
 {
-    /* Move to the next token */
-    *current += 1;
+    Token_type current_token_type = tokens[*current].type;
 
-    size_t prev = (*current) - 1;
-    Token_type prev_token_type = tokens[prev].type;
-
-    switch (prev_token_type) {
+    switch (current_token_type) {
         case STAR: case SLASH:
+            *current += 1;
             return true;
 
         default:
@@ -59,17 +52,14 @@ match_factor(Token *tokens, size_t *current)
 bool
 match_exponent(Token *tokens, size_t *current)
 {
-    /* Move to the next token */
-    *current += 1;
+    Token_type current_token_type = tokens[*current].type;
 
-    size_t prev = (*current) - 1;
-    Token_type prev_token_type = tokens[prev].type;
-
-    switch (prev_token_type) {
-        case POWER:
+    switch (current_token_type) {
+        case STAR: case SLASH:
+            *current += 1;
             return true;
 
-        defalt:
+        default:
             return false;
     }
 }

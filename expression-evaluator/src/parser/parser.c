@@ -3,11 +3,26 @@
 #include "node.h"
 #include "parser_helper.h"
 
+// TODO: Handle invalid syntax and parsing errors
+
 
 Tree_node *
 parse_primary(Token *tokens, size_t *current)
 {
-    //TODO: Complete primary expression parsing
+    //  TODO: Add parsing for parenthesis
+
+    Token current_token = tokens[*current];
+    Token_type current_token_type = current_token.type;
+
+    if (current_token_type == NUMBER) {
+        /* Move to the next token */
+        *current += 1;
+
+        Tree_node *leaf = init_node(NULL, NUMBER, NULL);
+        leaf->value = current_token.value;
+
+        return leaf;
+    }
 }
 
 
