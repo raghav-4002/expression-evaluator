@@ -55,7 +55,7 @@ match_exponent(Token *tokens, size_t *current)
     Token_type current_token_type = tokens[*current].type;
 
     switch (current_token_type) {
-        case STAR: case SLASH:
+        case POWER:
             *current += 1;
             return true;
 

@@ -37,6 +37,8 @@ parse_primary(Token *tokens, size_t *current)
             return NULL;
         }
 
+        *current += 1;
+
         return expr;
     }
 }
