@@ -17,16 +17,6 @@
 int
 add_number(struct Parameters *parameters)
 {
-    // TODO: 
-    // char  *string    = parameters->source;
-    // size_t start     = parameters->start;
-    // size_t end       = parameters->current;
-    // size_t cur_index = parameters->arr_size - 1;
-    //
-    // parameters->tokens[cur_index].arg = create_substring(string, start, end);
-    //
-    // if (!parameters->tokens[cur_index].arg) return -1;
-
     char *string     = parameters->source;
     size_t start     = parameters->start;
     size_t end       = parameters->current;
