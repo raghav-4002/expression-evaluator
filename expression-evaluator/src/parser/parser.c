@@ -31,6 +31,8 @@ parse_primary(Token *tokens, size_t *current)
 
         Tree_node *expr = parse_expression(tokens, current);
 
+        if (!expr) return NULL;
+
         /* If no closing parenthesis was found */
         if (tokens[*current].type != RIGHT_PAREN) {
             fprintf(stderr, "Syntax Error\n");
@@ -59,6 +61,8 @@ parse_exponent(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_primary(tokens, current);
 
+    if (!expr) return NULL;
+
     while (match_exponent(tokens, current)) {
         Node_type operator = previous(tokens, *current);
         Tree_node *right   = parse_primary(tokens, current);
@@ -74,6 +78,8 @@ static Tree_node *
 parse_factor(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_exponent(tokens, current);
+
+    if (!expr) return NULL;
 
     while (match_factor(tokens, current)) {
         Node_type operator = previous(tokens, *current);
@@ -91,9 +97,13 @@ parse_expression(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_factor(tokens, current);
 
+    if (!expr) return NULL;
+
     while (match_additive(tokens, current)) {
         Node_type operator = previous(tokens, *current);
         Tree_node *right   = parse_factor(tokens, current);
+
+        if (!right) return NULL;
 
         expr = init_node(expr, operator, right);
     }
