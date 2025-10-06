@@ -10,7 +10,7 @@
 Tree_node *parse_expression(Token *tokens, size_t *current);
 
 
-Tree_node *
+static Tree_node *
 parse_primary(Token *tokens, size_t *current)
 {
     Token current_token = tokens[*current];
@@ -41,10 +41,20 @@ parse_primary(Token *tokens, size_t *current)
 
         return expr;
     }
+
+    /*
+     * If none of the above cases match,
+     * it means some operator is at unexpected
+     * location,
+     */
+
+    fprintf(stderr, "Syntax Error: You placed an operator at some unexpected location...\n");
+
+    return NULL;
 }
 
 
-Tree_node *
+static Tree_node *
 parse_exponent(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_primary(tokens, current);
@@ -60,7 +70,7 @@ parse_exponent(Token *tokens, size_t *current)
 }
 
 
-Tree_node *
+static Tree_node *
 parse_factor(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_exponent(tokens, current);
@@ -86,6 +96,20 @@ parse_expression(Token *tokens, size_t *current)
         Tree_node *right   = parse_factor(tokens, current);
 
         expr = init_node(expr, operator, right);
+    }
+
+    Token_type current_token_type = tokens[*current].type;
+
+    /*
+     * Control must leave this function only when we've reached at NIL
+     * or have successfully parsed an expression inside of a pair of
+     * parenthesis. If none of those cases are true, there must be some
+     * syntax error.
+     */
+
+    if (current_token_type != RIGHT_PAREN && current_token_type != NIL) {
+        fprintf(stderr, "Syntax Error: You might have missed some operator...\n");
+        return NULL;
     }
 
     return expr;
