@@ -73,17 +73,13 @@ add_token(struct Parameters *parameters, Token_type type)
 int
 handle_number(struct Parameters *parameters)
 {
-    /* Move current ahead, until any of the recognised lexeme is not found */
-    while (!match(parameters, ' ') && !match(parameters, '\n')
-           && !match(parameters, '\t') && !match(parameters, '\0')
-           && !match(parameters, '+') && !match(parameters, '-')
-           && !match(parameters, '/') && !match(parameters, '*')
-           && !match(parameters, '^') && !match(parameters, '(')
-           && !match(parameters, ')')) {
+    char current_char = parameters->source[parameters->current];
 
+    /* Move ahead until some non-numeric character is not found */
+    while (current_char >= '0' && current_char <= '9') {
         advance_current(parameters);
+        current_char = parameters->source[parameters->current];
     }
-
     int err_return = add_token(parameters, NUMBER);
 
     return err_return;

@@ -34,6 +34,9 @@ traverse_tree(Tree_node *ast_root)
         case NUMBER:
             printf("%lf\t", node->value);
             break;
+
+        default:  /* To get rid of compiler warning */
+            break;
     }
 
     traverse_tree(node->left);
@@ -43,12 +46,16 @@ traverse_tree(Tree_node *ast_root)
 int
 main(void)
 {
-    char *string = read_from_stdin();
-    Token *tokens = tokenize(string);
-    size_t current = 0;
-    Tree_node *ast_root = parse_expression(tokens, &current);
+        char *string = read_from_stdin();
+        Token *tokens = tokenize(string);
 
-    printf("=====================Parsed tokens===================\n");
+        if (!tokens) return 1;
+
+        size_t current = 0;
+        Tree_node *ast_root = parse_expression(tokens, &current);
+
+    /* For now, just print the tokens and the tree produced */
+    printf("=====================Identified tokens===================\n");
     for (size_t i = 0; tokens[i].type != NIL; i++) {
         switch (tokens[i].type) {
             case PLUS:
@@ -81,6 +88,9 @@ main(void)
 
             case NUMBER:
                 printf("%lf\n", tokens[i].value);
+                break;
+
+            default:
                 break;
         }
     }
