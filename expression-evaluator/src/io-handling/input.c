@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "input.h"
 
@@ -6,12 +7,19 @@
 char *
 read_from_stdin(void)
 {
-    char *line = NULL;
-    size_t n = 0;
+    char *line      = NULL;
+    size_t line_len = 0;
+    char ch;
 
-    int line_len = getline(&line, &n, stdin);
+    while ((ch = getchar()) != '\n') {
+        line_len++;
+        line = realloc(line, line_len * sizeof(*line));
+        line[line_len - 1] = ch;
+    }
 
-    if (line_len == -1) return NULL;
+    /* Add null-byte at the end */
+    line = realloc(line, (line_len + 1) * sizeof(*line));
+    line[line_len] = '\0';
 
     return line;
 }
