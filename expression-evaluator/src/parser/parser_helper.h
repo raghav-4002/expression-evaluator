@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include "node.h"
+#include "parser/node.h"
 
 Tree_node *init_node(Tree_node *expr, Node_type type, Tree_node *right);
 bool match_additive(Token *tokens, size_t *current);

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "token.h"
+#include "lexer/token.h"
 
 
 struct Parameters
