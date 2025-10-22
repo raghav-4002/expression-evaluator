@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
 #include "parser_helper.h"
-#include "parser/node.h"
+#include "node.h"
 
 
 Tree_node *

@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "lexer_helper.h"
-#include "../utils.h"
+#include "utils.h"
 
 
 void

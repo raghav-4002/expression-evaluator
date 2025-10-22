@@ -1,11 +1,10 @@
 #ifndef LEXER_HELPER_
 #define LEXER_HELPER_
 
-#include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "lexer/token.h"
+#include "token.h"
 
 
 struct Parameters

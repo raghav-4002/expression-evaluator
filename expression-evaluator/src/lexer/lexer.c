@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "lexer/lexer.h"
-#include "lexer/token.h"
+#include "lexer.h"
+#include "token.h"
 #include "lexer_helper.h"
 
 

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "parser/parser.h"
-#include "parser/node.h"
+#include "parser.h"
+#include "node.h"
 #include "parser_helper.h"
 
 // TODO: Handle invalid syntax and parsing errors

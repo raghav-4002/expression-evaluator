@@ -2,7 +2,7 @@
 #define NODE_H_
 
 
-#include "../lexer/token.h"
+#include "token.h"
 
 
 /* Node types and token types will be same */

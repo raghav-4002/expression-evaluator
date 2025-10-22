@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "io-handling/input.h"
+#include "input.h"
 
 
 char *
