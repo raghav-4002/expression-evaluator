@@ -12,9 +12,8 @@
  * @brief : Adds literal value of argument into token
             of type `COMMAND`.
  * @param : A pointer to `struct Parameters`.
- * @return: `0` on success; `-1` on failure.
  */
-int
+void
 add_number(struct Parameters *parameters)
 {
     char *string     = parameters->source;
@@ -23,8 +22,6 @@ add_number(struct Parameters *parameters)
     size_t cur_index = parameters->arr_size - 1;
 
     parameters->tokens[cur_index].value = extract_number(string, start, end);
-
-    return 0;
 }
 
 
@@ -47,7 +44,9 @@ add_token(struct Parameters *parameters, Token_type type)
     /* Resize array */
     tokens = realloc(tokens, arr_size * sizeof(*tokens));
 
+    //FIX: Change error hanlding method for realloc
     if (!tokens) {
+        perror(NULL);
         parameters->arr_size -= 1;  /* reset array size */
         return -1;
     }
@@ -58,7 +57,7 @@ add_token(struct Parameters *parameters, Token_type type)
     parameters->tokens = tokens;
 
     if (type == NUMBER) {
-        if (add_number(parameters) == -1) return -1;
+        add_number(parameters);
     }
 
     return 0;
@@ -80,8 +79,8 @@ handle_number(struct Parameters *parameters)
         advance_current(parameters);
         current_char = parameters->source[parameters->current];
     }
-    int err_return = add_token(parameters, NUMBER);
 
+    int err_return = add_token(parameters, NUMBER);
     return err_return;
 }
 
@@ -145,6 +144,7 @@ scan_token(struct Parameters *parameters)
  * @param : An input string
  * @return: An array of type `Token`; last element is type `NIL`
  *          `NULL` on failure
+ *          The caller must free the array returned
  */
 Token *
 tokenize(char *input)
