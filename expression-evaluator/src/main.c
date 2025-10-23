@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "node.h"
 #include "parser.h"
+#include "evaluator.h"
 #include "utils.h"
 
 
@@ -23,6 +24,10 @@ main(void)
         if (!ast_root) continue;
 
         traverse_tree(ast_root);
+
+        double result = evaluate_ast(ast_root);
+
+        printf("\nResult of expression: %lf\n", result);
 
         //TODO: Logic for freeing AST
         free(tokens);

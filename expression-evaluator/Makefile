@@ -1,10 +1,10 @@
-STD := --std=c99 --pedantic
-WARNING_FLAGS := -Wall -Wextra
-DEBUG_FLAG := -g
-INCLUDE := -Iinclude
+CC := gcc
+CFLAGS := -Wall -Wextra -std=c99 -pedantic
+IFLAGS := -Iinclude
+DEBUG := -g
 
-main:
-		gcc $(WARNING_FLAGS) $(STD) $(INCLUDE) src/*.c src/lexer/*.c src/io-handling/*.c src/parser/*.c -o main
+all:
+		$(CC) $(CFLAGS) $(IFLAGS) src/io-handling/*.c src/lexer/*.c src/parser/*.c src/evaluator/*.c src/*.c -lm -o main
 
 debug:
-		gcc $(DEBUG_FLAG) $(WARNING_FLAGS) $(STD) $(INCLUDE) src/*.c src/lexer/*.c src/io-handling/*.c src/parser/*.c -o main
+		$(CC) $(CFLAGS) $(IFLAGS) $(DEBUG) src/io-handling/*.c src/lexer/*.c src/parser/*.c src/*.c -o main
