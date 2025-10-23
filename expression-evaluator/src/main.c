@@ -11,16 +11,21 @@ int
 main(void)
 {
     while (1) {
-        printf("Enter the expression: ");
+        printf("\nEnter the expression: ");
         char *expression = read_from_stdin();
         if (!expression) continue;
 
         Token *tokens = tokenize(expression);
         if (!tokens) continue;
 
-        Tree_node *ast_root = parse_expression(tokens, 0);
+        size_t current = 0;
+        Tree_node *ast_root = parse_expression(tokens, &current);
         if (!ast_root) continue;
 
         traverse_tree(ast_root);
+
+        //TODO: Logic for freeing AST
+        free(tokens);
+        free(expression);
     }
 }
