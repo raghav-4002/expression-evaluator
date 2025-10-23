@@ -93,6 +93,16 @@ parse_factor(Token *tokens, size_t *current)
 }
 
 
+/*
+ * ================== WARNING =======================
+ * The current parser implementation can only handle basic errors.
+ 
+ * It can't pin-point to the exact location of the error, yet.
+ 
+ * Also once an error is detected, the pre-mature Abstract Syntax
+ * Tree is not freed, meaning memory leaks are inevitable.
+ */
+
 Tree_node *
 parse_expression(Token *tokens, size_t *current)
 {

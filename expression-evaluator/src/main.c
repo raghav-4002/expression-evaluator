@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "node.h"
 #include "parser.h"
+#include "utils.h"
 
 
 int
@@ -19,5 +20,7 @@ main(void)
 
         Tree_node *ast_root = parse_expression(tokens, 0);
         if (!ast_root) continue;
+
+        traverse_tree(ast_root);
     }
 }
