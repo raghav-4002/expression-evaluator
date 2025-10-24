@@ -14,14 +14,14 @@
  * @param : A pointer to `struct Parameters`.
  */
 void
-add_number(struct Parameters *parameters)
+add_number(struct Lexer_obj *lexer_obj)
 {
-    char *string     = parameters->source;
-    size_t start     = parameters->start;
-    size_t end       = parameters->current;
-    size_t cur_index = parameters->arr_size - 1;
+    char *string     = lexer_obj->source;
+    size_t start     = lexer_obj->start;
+    size_t end       = lexer_obj->current;
+    size_t cur_index = lexer_obj->arr_size - 1;
 
-    parameters->tokens[cur_index].value = extract_number(string, start, end);
+    lexer_obj->tokens[cur_index].value = extract_number(string, start, end);
 }
 
 
@@ -32,13 +32,13 @@ add_number(struct Parameters *parameters)
  * @return: `0` on success; `-1` on failure.
  */
 int
-add_token(struct Parameters *parameters, Token_type type)
+add_token(struct Lexer_obj *lexer_obj, Token_type type)
 {
-    Token *tokens = parameters->tokens;
+    Token *tokens = lexer_obj->tokens;
 
     /* Add space for one more token */
-    parameters->arr_size += 1;
-    size_t arr_size       = parameters->arr_size;
+    lexer_obj->arr_size += 1;
+    size_t arr_size       = lexer_obj->arr_size;
     size_t cur_index      = arr_size - 1;
 
     /* Resize array */
@@ -47,17 +47,17 @@ add_token(struct Parameters *parameters, Token_type type)
     //FIX: Change error hanlding method for realloc
     if (!tokens) {
         perror(NULL);
-        parameters->arr_size -= 1;  /* reset array size */
+        lexer_obj->arr_size -= 1;  /* reset array size */
         return -1;
     }
 
     Token *cur_token = &tokens[cur_index];
     init_token(cur_token, type);
 
-    parameters->tokens = tokens;
+    lexer_obj->tokens = tokens;
 
     if (type == NUMBER) {
-        add_number(parameters);
+        add_number(lexer_obj);
     }
 
     return 0;
@@ -70,17 +70,17 @@ add_token(struct Parameters *parameters, Token_type type)
  * @return: `0` on success; `-1` on failure.
  */
 int
-handle_number(struct Parameters *parameters)
+handle_number(struct Lexer_obj *lexer_obj)
 {
-    char current_char = parameters->source[parameters->current];
+    char current_char = lexer_obj->source[lexer_obj->current];
 
     /* Move ahead until some non-numeric character is not found */
     while (current_char >= '0' && current_char <= '9') {
-        advance_current(parameters);
-        current_char = parameters->source[parameters->current];
+        advance_current(lexer_obj);
+        current_char = lexer_obj->source[lexer_obj->current];
     }
 
-    int err_return = add_token(parameters, NUMBER);
+    int err_return = add_token(lexer_obj, NUMBER);
     return err_return;
 }
 
@@ -91,40 +91,40 @@ handle_number(struct Parameters *parameters)
  * @return: `0` on success; `-1` on failure
  */
 int
-scan_token(struct Parameters *parameters)
+scan_token(struct Lexer_obj *lexer_obj)
 {
-    char c = advance_current(parameters);
+    char c = advance_current(lexer_obj);
 
     int err_return = 0;
 
     switch (c) {
         case '+':
-            err_return = add_token(parameters, PLUS);
+            err_return = add_token(lexer_obj, PLUS);
             break;
         case '-':
-            err_return = add_token(parameters, MINUS);
+            err_return = add_token(lexer_obj, MINUS);
             break;
         case '*':
-            err_return = add_token(parameters, STAR);
+            err_return = add_token(lexer_obj, STAR);
             break;
         case '/':
-            err_return = add_token(parameters, SLASH);
+            err_return = add_token(lexer_obj, SLASH);
             break;
         case '^':
-            err_return = add_token(parameters, POWER);
+            err_return = add_token(lexer_obj, POWER);
             break;
         case '(':
-            err_return = add_token(parameters, LEFT_PAREN);
+            err_return = add_token(lexer_obj, LEFT_PAREN);
             break;
         case ')':
-            err_return = add_token(parameters, RIGHT_PAREN);
+            err_return = add_token(lexer_obj, RIGHT_PAREN);
         case ' ': case '\n': case '\t':
             break;
 
         /* Number tokens */
         default:
             if (c >= '0' && c <= '9') {
-                err_return = handle_number(parameters);
+                err_return = handle_number(lexer_obj);
                 break;
             }
  
@@ -163,32 +163,32 @@ tokenize(char *input)
      * `size_t current` : an index pointing to the current character
                           being considered.
      */
-    struct Parameters *parameters = malloc(sizeof(*parameters));
+    struct Lexer_obj *lexer_obj = malloc(sizeof(*lexer_obj));
 
-    if (!parameters) return NULL;
+    if (!lexer_obj) return NULL;
 
-    init_parameters(parameters, input);
+    init_parameters(lexer_obj, input);
 
     int err_return = 0;
 
-    while (!current_is_at_end(parameters)) {
+    while (!current_is_at_end(lexer_obj)) {
         /* Move to the next lexeme */
-        parameters->start = parameters->current;
-        err_return        = scan_token(parameters);
+        lexer_obj->start = lexer_obj->current;
+        err_return        = scan_token(lexer_obj);
 
         if (err_return == -1) {
-            free_tokens_on_error(parameters);
+            free_tokens_on_error(lexer_obj);
             return NULL;
         }
     }
 
     /* Add `NIL` as last token */
-    err_return = add_token(parameters, NIL);
+    err_return = add_token(lexer_obj, NIL);
 
     if (err_return == -1) {
-        free_tokens_on_error(parameters);
+        free_tokens_on_error(lexer_obj);
         return NULL;
     }
 
-    return parameters->tokens;
+    return lexer_obj->tokens;
 }

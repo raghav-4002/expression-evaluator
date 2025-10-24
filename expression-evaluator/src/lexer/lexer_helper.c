@@ -6,14 +6,14 @@
 
 
 void
-init_parameters(struct Parameters *parameters, char *input)
+init_parameters(struct Lexer_obj *lexer_obj, char *input)
 {
-    parameters->tokens    = NULL;
-    parameters->arr_size  = 0;
+    lexer_obj->tokens    = NULL;
+    lexer_obj->arr_size  = 0;
 
-    parameters->source    = input;
-    parameters->start     = 0;
-    parameters->current   = 0;
+    lexer_obj->source    = input;
+    lexer_obj->start     = 0;
+    lexer_obj->current   = 0;
 }
 
 
@@ -22,10 +22,10 @@ init_parameters(struct Parameters *parameters, char *input)
  * @return: `true`, if yes
  */
 bool
-current_is_at_end(struct Parameters *parameters)
+current_is_at_end(struct Lexer_obj *lexer_obj)
 {
-    char *source   = parameters->source;
-    size_t current = parameters->current;
+    char *source   = lexer_obj->source;
+    size_t current = lexer_obj->current;
 
     if (source[current] == '\0') return true;
 
@@ -38,12 +38,12 @@ current_is_at_end(struct Parameters *parameters)
  * @return: Character previous to `current`
  */
 char
-advance_current(struct Parameters *parameters)
+advance_current(struct Lexer_obj *lexer_obj)
 {
-    parameters->current += 1;
+    lexer_obj->current += 1;
 
-    size_t current = parameters->current;
-    char  *source  = parameters->source;
+    size_t current = lexer_obj->current;
+    char  *source  = lexer_obj->source;
 
     return source[current - 1];
 }
@@ -54,10 +54,10 @@ advance_current(struct Parameters *parameters)
  * Else returns `false`.
  */
 bool
-match(struct Parameters *parameters, char expected)
+match(struct Lexer_obj *lexer_obj, char expected)
 {
-    char *source   = parameters->source;
-    size_t current = parameters->current;
+    char *source   = lexer_obj->source;
+    size_t current = lexer_obj->current;
 
     if (source[current] == expected) return true;
 
@@ -102,9 +102,9 @@ create_substring(char *string, size_t start, size_t end)
  * @param : A pointer to `struct Parameters`.
  */
 void
-free_tokens_on_error(struct Parameters *parameters)
+free_tokens_on_error(struct Lexer_obj *lexer_obj)
 {
-    Token *tokens       = parameters->tokens;
+    Token *tokens       = lexer_obj->tokens;
     free_tokens(tokens);
 }
 
