@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <math.h>
 
 #include "node.h"
@@ -44,9 +45,12 @@ evaluate_ast(Tree_node *node)
         return node->value;
     }
 
-    double left  = evaluate_ast(node->left);
-    double right = evaluate_ast(node->right);
+    double left         = evaluate_ast(node->left);
+    double right        = evaluate_ast(node->right);
     Node_type operation = node->type;
+
+    free(node->left);
+    free(node->right);
 
     return result(left, operation, right);
 }
