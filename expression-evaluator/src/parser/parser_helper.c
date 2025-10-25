@@ -24,51 +24,62 @@ init_node(Tree_node *expr, Node_type type, Tree_node *right)
 
 
 bool
-match_additive(Token *tokens, size_t *current)
+match(Token_type expected_token_type, Token *tokens, size_t *current)
 {
     Token_type current_token_type = tokens[*current].type;
 
-    switch (current_token_type) {
-        case PLUS: case MINUS:
-            *current += 1;
-            return true;
+    if (current_token_type == expected_token_type) return true;
 
-        default:
-            return false;
-    }
+    return false;
 }
 
 
-bool
-match_factor(Token *tokens, size_t *current)
-{
-    Token_type current_token_type = tokens[*current].type;
-
-    switch (current_token_type) {
-        case STAR: case SLASH:
-            *current += 1;
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-
-bool
-match_exponent(Token *tokens, size_t *current)
-{
-    Token_type current_token_type = tokens[*current].type;
-
-    switch (current_token_type) {
-        case POWER:
-            *current += 1;
-            return true;
-
-        default:
-            return false;
-    }
-}
+// bool
+// match_additive(Token *tokens, size_t *current)
+// {
+//     Token_type current_token_type = tokens[*current].type;
+//
+//     switch (current_token_type) {
+//         case PLUS: case MINUS:
+//             *current += 1;
+//             return true;
+//
+//         default:
+//             return false;
+//     }
+// }
+//
+//
+// bool
+// match_factor(Token *tokens, size_t *current)
+// {
+//     Token_type current_token_type = tokens[*current].type;
+//
+//     switch (current_token_type) {
+//         case STAR: case SLASH:
+//             *current += 1;
+//             return true;
+//
+//         default:
+//             return false;
+//     }
+// }
+//
+//
+// bool
+// match_exponent(Token *tokens, size_t *current)
+// {
+//     Token_type current_token_type = tokens[*current].type;
+//
+//     switch (current_token_type) {
+//         case POWER:
+//             *current += 1;
+//             return true;
+//
+//         default:
+//             return false;
+//     }
+// }
 
 
 Node_type

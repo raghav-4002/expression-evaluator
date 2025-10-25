@@ -42,7 +42,7 @@ parse_exponent(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_primary(tokens, current);
 
-    while (match_exponent(tokens, current)) {
+    while (match(POWER, tokens, current)) {
         Node_type operator = previous(tokens, *current);
         Tree_node *right   = parse_primary(tokens, current);
 
@@ -58,7 +58,7 @@ parse_factor(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_exponent(tokens, current);
 
-    while (match_factor(tokens, current)) {
+    while (match(STAR, tokens, current) || match(SLASH, tokens, current)) {
         Node_type operator = previous(tokens, *current);
         Tree_node *right   = parse_exponent(tokens, current);
 
@@ -84,7 +84,7 @@ parse_expression(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_factor(tokens, current);
 
-    while (match_additive(tokens, current)) {
+    while (match(PLUS, tokens, current) || match(MINUS, tokens, current)) {
         Node_type operator = previous(tokens, *current);
         Tree_node *right   = parse_factor(tokens, current);
 
