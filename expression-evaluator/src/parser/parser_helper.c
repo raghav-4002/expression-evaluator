@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 
 #include "parser_helper.h"
@@ -8,6 +9,11 @@ Tree_node *
 init_node(Tree_node *expr, Node_type type, Tree_node *right)
 {
     Tree_node *node = malloc(sizeof(*node));
+
+    if (!node) {
+        perror(NULL);
+        return NULL;
+    }
 
     node->left  = expr;
     node->type  = type;

@@ -7,4 +7,4 @@ all:
 		$(CC) $(CFLAGS) $(IFLAGS) src/io-handling/*.c src/lexer/*.c src/parser/*.c src/evaluator/*.c src/*.c -lm -o main
 
 debug:
-		$(CC) $(CFLAGS) $(IFLAGS) $(DEBUG) src/io-handling/*.c src/lexer/*.c src/parser/*.c src/*.c -o main
+		$(CC) $(CFLAGS) $(IFLAGS) $(DEBUG) src/io-handling/*.c src/lexer/*.c src/parser/*.c src/evaluator/*.c src/*.c -lm -o main
