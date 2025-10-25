@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
-
 #include "parser_helper.h"
 #include "node.h"
+#include "token.h"
 
 
 Tree_node *
@@ -23,6 +23,14 @@ init_node(Tree_node *expr, Node_type type, Tree_node *right)
 }
 
 
+Token_type
+consume(Token *tokens, size_t *current)
+{
+    *current += 1;
+    return tokens[*current - 1].type;
+}
+
+
 bool
 match(Token_type expected_token_type, Token *tokens, size_t *current)
 {
@@ -31,59 +39,4 @@ match(Token_type expected_token_type, Token *tokens, size_t *current)
     if (current_token_type == expected_token_type) return true;
 
     return false;
-}
-
-
-// bool
-// match_additive(Token *tokens, size_t *current)
-// {
-//     Token_type current_token_type = tokens[*current].type;
-//
-//     switch (current_token_type) {
-//         case PLUS: case MINUS:
-//             *current += 1;
-//             return true;
-//
-//         default:
-//             return false;
-//     }
-// }
-//
-//
-// bool
-// match_factor(Token *tokens, size_t *current)
-// {
-//     Token_type current_token_type = tokens[*current].type;
-//
-//     switch (current_token_type) {
-//         case STAR: case SLASH:
-//             *current += 1;
-//             return true;
-//
-//         default:
-//             return false;
-//     }
-// }
-//
-//
-// bool
-// match_exponent(Token *tokens, size_t *current)
-// {
-//     Token_type current_token_type = tokens[*current].type;
-//
-//     switch (current_token_type) {
-//         case POWER:
-//             *current += 1;
-//             return true;
-//
-//         default:
-//             return false;
-//     }
-// }
-
-
-Node_type
-previous(Token *tokens, size_t current)
-{
-    return tokens[current - 1].type;
 }
