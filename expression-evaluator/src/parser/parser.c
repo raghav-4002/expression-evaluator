@@ -4,9 +4,15 @@
 #include "parser.h"
 #include "node.h"
 #include "parser_helper.h"
+#include "token.h"
 
 // TODO: Handle invalid syntax and parsing errors
 // TODO: Add parsing support for unary operator (- and +) Tree_node *parse_expression(Token *tokens, size_t *current);
+
+Paren_stack *paren_stack = NULL;
+
+
+Tree_node *parse_expression(Token *tokens, size_t *current);
 
 
 static Tree_node *
@@ -28,16 +34,11 @@ parse_primary(Token *tokens, size_t *current)
     }
 
     if (current_token.type == LEFT_PAREN) {
+        push_paren(paren_stack);
         consume(tokens, current); /* consume ( */
         Tree_node *expr = parse_expression(tokens, current);
 
         if (!expr) return NULL;
-
-        /* If no closing parenthesis was found */
-        if (tokens[*current].type != RIGHT_PAREN) {
-            fprintf(stderr, "( was never closed\n");
-            return NULL;
-        }
 
         consume(tokens, current);
         return expr;
@@ -60,7 +61,7 @@ parse_exponent(Token *tokens, size_t *current)
 
     if (!expr) return NULL;
 
-    while (match(POWER, tokens, current)) {
+    while (expect(POWER, tokens, current)) {
         Node_type operator = consume(tokens, current);
         Tree_node *right   = parse_primary(tokens, current);
 
@@ -80,8 +81,8 @@ parse_factor(Token *tokens, size_t *current)
 
     if (!expr) return NULL;
 
-    while (match(STAR, tokens, current)
-        || match(SLASH, tokens, current)) {
+    while (expect(STAR, tokens, current)
+        || expect(SLASH, tokens, current)) {
         Node_type operator = consume(tokens, current);
         Tree_node *right   = parse_exponent(tokens, current);
 
@@ -101,8 +102,8 @@ parse_expression(Token *tokens, size_t *current)
 
     if (!expr) return NULL;
 
-    while (match(PLUS, tokens, current)
-        || match(MINUS, tokens, current)) {
+    while (expect(PLUS, tokens, current)
+        || expect(MINUS, tokens, current)) {
         Node_type operator = consume(tokens, current);
         Tree_node *right   = parse_factor(tokens, current);
 
@@ -111,5 +112,24 @@ parse_expression(Token *tokens, size_t *current)
         expr = init_node(expr, operator, right);
     }
 
-    return expr;
+    Token_type cur_token_type = tokens[*current].type;
+
+    if (cur_token_type == RIGHT_PAREN) {
+        if (!paren_stack) {
+            fprintf(stderr, "Syntax Error: Unmatched )\n");
+            return NULL;
+        }
+
+        pop_paren(paren_stack);
+        return expr;
+    }
+
+    else {
+        if (paren_stack) {
+            fprintf(stderr, "Syntax Error: ( was never closed\n");
+            return NULL;
+        }
+
+        return expr;
+    }
 }

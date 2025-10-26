@@ -33,11 +33,31 @@ consume(Token *tokens, size_t *current)
 
 
 bool
-match(Token_type expected_token_type, Token *tokens, size_t *current)
+expect(Token_type expected_token_type, Token *tokens, size_t *current)
 {
     Token_type current_token_type = tokens[*current].type;
 
     if (current_token_type == expected_token_type) return true;
 
     return false;
+}
+
+
+void
+push_paren(Paren_stack *paren_stack)
+{
+    Paren_stack *new = malloc(sizeof(*paren_stack));
+    new->previous = paren_stack;
+    paren_stack = new;
+}
+
+
+void
+pop_paren(Paren_stack *paren_stack)
+{
+    if (paren_stack) {
+        Paren_stack *prev = paren_stack->previous;
+        free(paren_stack);
+        paren_stack = prev;
+    }
 }
