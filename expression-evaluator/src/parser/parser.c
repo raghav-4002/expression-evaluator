@@ -6,7 +6,6 @@
 #include "parser_helper.h"
 #include "token.h"
 
-// TODO: Handle invalid syntax and parsing errors
 // TODO: Add parsing support for unary operator (- and +) Tree_node *parse_expression(Token *tokens, size_t *current);
 
 Paren_stack *paren_stack = NULL;
@@ -100,14 +99,20 @@ parse_expression(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_factor(tokens, current);
 
-    if (!expr) return NULL;
+    if (!expr) {
+        wrap_up_parser(expr, &paren_stack);
+        return NULL;
+    }
 
     while (expect(PLUS, tokens, current)
         || expect(MINUS, tokens, current)) {
         Node_type operator = consume(tokens, current);
         Tree_node *right   = parse_factor(tokens, current);
 
-        if (!right) return NULL;
+        if (!right) {
+            wrap_up_parser(expr, &paren_stack);
+            return NULL;
+        }
 
         expr = init_node(expr, operator, right);
     }
@@ -122,6 +127,8 @@ parse_expression(Token *tokens, size_t *current)
 
         if (!paren_stack) {
             fprintf(stderr, "Syntax Error: Unmatched )\n");
+            wrap_up_parser(expr, &paren_stack);
+
             return NULL;
         }
 
@@ -133,6 +140,8 @@ parse_expression(Token *tokens, size_t *current)
     else {
         if (paren_stack) {
             fprintf(stderr, "Syntax Error: ( was never closed\n");
+            wrap_up_parser(expr, &paren_stack);
+
             return NULL;
         }
 

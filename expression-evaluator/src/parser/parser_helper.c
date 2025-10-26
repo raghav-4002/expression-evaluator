@@ -61,3 +61,31 @@ pop_paren(Paren_stack **paren_stack)
         *paren_stack = prev;
     }
 }
+
+
+static void
+empty_stack(Paren_stack **paren_stack)
+{
+    while (*paren_stack) {
+        pop_paren(paren_stack);
+    }
+}
+
+
+static void
+destroy_tree(Tree_node *root)
+{
+    if (!root) return;
+
+    destroy_tree(root->left);
+    destroy_tree(root->right);
+    free(root);
+}
+
+
+void
+wrap_up_parser(Tree_node *root, Paren_stack **paren_stack)
+{
+    empty_stack(paren_stack);
+    destroy_tree(root);
+}
