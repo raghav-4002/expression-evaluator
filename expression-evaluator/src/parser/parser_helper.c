@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+
 #include "parser_helper.h"
 #include "node.h"
 #include "token.h"
