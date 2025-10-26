@@ -34,7 +34,7 @@ parse_primary(Token *tokens, size_t *current)
     }
 
     if (current_token.type == LEFT_PAREN) {
-        push_paren(paren_stack);
+        push_paren(&paren_stack);
         consume(tokens, current); /* consume ( */
         Tree_node *expr = parse_expression(tokens, current);
 
@@ -115,12 +115,18 @@ parse_expression(Token *tokens, size_t *current)
     Token_type cur_token_type = tokens[*current].type;
 
     if (cur_token_type == RIGHT_PAREN) {
+        /* 
+         * Current token is closing parenthesis but no opening parenthesis
+         * was found => Unmatched ) error
+         */
+
         if (!paren_stack) {
             fprintf(stderr, "Syntax Error: Unmatched )\n");
             return NULL;
         }
 
-        pop_paren(paren_stack);
+        /* Pop the matching opening parenthesis */
+        pop_paren(&paren_stack);
         return expr;
     }
 

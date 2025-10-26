@@ -44,20 +44,20 @@ expect(Token_type expected_token_type, Token *tokens, size_t *current)
 
 
 void
-push_paren(Paren_stack *paren_stack)
+push_paren(Paren_stack **paren_stack)
 {
     Paren_stack *new = malloc(sizeof(*paren_stack));
-    new->previous = paren_stack;
-    paren_stack = new;
+    new->previous = *paren_stack;
+    *paren_stack = new;
 }
 
 
 void
-pop_paren(Paren_stack *paren_stack)
+pop_paren(Paren_stack **paren_stack)
 {
-    if (paren_stack) {
-        Paren_stack *prev = paren_stack->previous;
-        free(paren_stack);
-        paren_stack = prev;
+    if (*paren_stack) {
+        Paren_stack *prev = (*paren_stack)->previous;
+        free(*paren_stack);
+        *paren_stack = prev;
     }
 }

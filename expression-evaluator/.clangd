@@ -1,0 +1,7 @@
+CompileFlags:
+  Add:
+    - "-I/home/raghav/programming/github-repos/toy-projects/expression-evaluator/include/"
+    - "-Wall"
+    - "-Wextra"
+    - "-std=c99"
+    - "-pedantic"
