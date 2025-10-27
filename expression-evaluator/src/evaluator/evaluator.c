@@ -8,33 +8,37 @@
 // TODO: Rewrite evaluator to handle unary operation
 
 double
-result(double left, Node_type operation, double right)
+calculate(Tree_node *left, Tree_node *root, Tree_node *right)
 {
-    double result = 0;
+    Node_type operation = root->type;
+    double result;
 
     switch (operation) {
         case PLUS:
-            result = left + right;
+            result = left->value + right->value;
             break;
+
         case MINUS:
-            result = left - right;
+            result = left->value - right->value;
             break;
 
         case STAR:
-            result = left * right;
+            result = left->value * right->value;
             break;
 
         case SLASH:
-            result = left / right;
+            result = left->value / right->value;
             break;
 
         case POWER:
-            result = pow(left, right);
+            result = pow(left->value, right->value);
             break;
 
         case UNARY_MINUS:
+            result = left->value * -1;
 
         default:
+            /* dummy case to silent compiler warning */
             break;
     }
 
@@ -42,19 +46,17 @@ result(double left, Node_type operation, double right)
 }
 
 
-double
-evaluate_ast(Tree_node *node)
+Tree_node *
+evaluate_ast(Tree_node *ast_root, double *result)
 {
-    if (node->type == NUMBER) {
-        return node->value;
-    }
+    if (!ast_root) return NULL;
+    if (ast_root->type == NUMBER) return ast_root;
 
-    double left         = evaluate_ast(node->left);
-    double right        = evaluate_ast(node->right);
-    Node_type operation = node->type;
+    Tree_node *left = evaluate_ast(ast_root->left, result);
+    Tree_node *right = evaluate_ast(ast_root->right, result);
 
-    free(node->left);
-    free(node->right);
+    ast_root->value = calculate(left, ast_root, right);
+    *result += ast_root->value;
 
-    return result(left, operation, right);
+    return ast_root;
 }
