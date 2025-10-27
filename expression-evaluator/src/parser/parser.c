@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -54,15 +55,29 @@ parse_primary(Token *tokens, size_t *current)
 
 
 static Tree_node *
+parse_unary(Token *tokens, size_t *current)
+{
+    if (expect(PLUS, tokens, current) || expect(MINUS, tokens, current)) {
+        Token_type operator = consume(tokens, current);
+        Tree_node *right    = parse_unary(tokens, current);
+        update_sign(operator, &right);
+        return right;
+    }
+
+    return parse_primary(tokens, current);
+}
+
+
+static Tree_node *
 parse_exponent(Token *tokens, size_t *current)
 {
-    Tree_node *expr = parse_primary(tokens, current);
+    Tree_node *expr = parse_unary(tokens, current);
 
     if (!expr) return NULL;
 
     while (expect(POWER, tokens, current)) {
         Node_type operator = consume(tokens, current);
-        Tree_node *right   = parse_primary(tokens, current);
+        Tree_node *right   = parse_unary(tokens, current);
 
         if (!right) return NULL;
 

@@ -89,3 +89,12 @@ wrap_up_parser(Tree_node *root, Paren_stack **paren_stack)
     empty_stack(paren_stack);
     destroy_tree(root);
 }
+
+
+void
+update_sign(Token_type operator, Tree_node **right)
+{
+    if (operator == MINUS) {
+        (*right)->value *= -1;
+    }
+}
