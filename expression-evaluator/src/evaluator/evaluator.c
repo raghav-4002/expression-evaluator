@@ -5,6 +5,8 @@
 #include "token.h"
 
 
+// TODO: Rewrite evaluator to handle unary operation
+
 double
 result(double left, Node_type operation, double right)
 {
@@ -29,6 +31,8 @@ result(double left, Node_type operation, double right)
         case POWER:
             result = pow(left, right);
             break;
+
+        case UNARY_MINUS:
 
         default:
             break;

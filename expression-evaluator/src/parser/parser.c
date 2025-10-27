@@ -7,7 +7,7 @@
 #include "parser_helper.h"
 #include "token.h"
 
-// TODO: Add parsing support for unary operator (- and +) Tree_node *parse_expression(Token *tokens, size_t *current);
+// TODO: Add parsing support for unary operator (- and +)
 
 Paren_stack *paren_stack = NULL;
 
@@ -57,11 +57,17 @@ parse_primary(Token *tokens, size_t *current)
 static Tree_node *
 parse_unary(Token *tokens, size_t *current)
 {
-    if (expect(PLUS, tokens, current) || expect(MINUS, tokens, current)) {
-        Token_type operator = consume(tokens, current);
-        Tree_node *right    = parse_unary(tokens, current);
-        update_sign(operator, &right);
-        return right;
+    if (expect(PLUS, tokens, current)
+     || expect(MINUS, tokens, current)) {
+
+        /* Only handle Unary minus because unary plus has no effect */
+        if (consume(tokens, current) == MINUS) {
+            Tree_node *child = parse_unary(tokens, current);
+
+            /* Unary node will only have a left child */
+            Tree_node *expr  = init_node(child, UNARY_MINUS, NULL);
+            return expr;
+        }
     }
 
     return parse_primary(tokens, current);
@@ -97,6 +103,7 @@ parse_factor(Token *tokens, size_t *current)
 
     while (expect(STAR, tokens, current)
         || expect(SLASH, tokens, current)) {
+
         Node_type operator = consume(tokens, current);
         Tree_node *right   = parse_exponent(tokens, current);
 
@@ -121,6 +128,7 @@ parse_expression(Token *tokens, size_t *current)
 
     while (expect(PLUS, tokens, current)
         || expect(MINUS, tokens, current)) {
+
         Node_type operator = consume(tokens, current);
         Tree_node *right   = parse_factor(tokens, current);
 
@@ -132,9 +140,7 @@ parse_expression(Token *tokens, size_t *current)
         expr = init_node(expr, operator, right);
     }
 
-    Token_type cur_token_type = tokens[*current].type;
-
-    if (cur_token_type == RIGHT_PAREN) {
+    if (expect(RIGHT_PAREN, tokens, current)) {
         /* 
          * Current token is closing parenthesis but no opening parenthesis
          * was found => Unmatched ) error

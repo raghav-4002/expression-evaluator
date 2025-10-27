@@ -9,6 +9,8 @@ typedef enum Token_type
     PLUS, MINUS,
     STAR, SLASH, POWER,
 
+    UNARY_MINUS,  /* will only be used by parser and evaluator */
+
     LEFT_PAREN, RIGHT_PAREN,
 
     NIL,
