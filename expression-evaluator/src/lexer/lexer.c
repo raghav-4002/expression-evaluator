@@ -65,7 +65,7 @@ add_token(struct Lexer_obj *lexer_obj, Token_type type)
 
 
 /*
- * @brief : Tokenizes a lexeme of type `COMMAND`.
+ * @brief : Tokenizes a lexeme of type `NUMBER`
  * @param : A pointer to `struct Parameters`.
  * @return: `0` on success; `-1` on failure.
  */
@@ -73,9 +73,22 @@ int
 handle_number(struct Lexer_obj *lexer_obj)
 {
     char current_char = lexer_obj->source[lexer_obj->current];
+    bool decimal_already_covered = false;
 
     /* Move ahead until some non-numeric character is not found */
-    while (current_char >= '0' && current_char <= '9') {
+    while ((current_char >= '0' && current_char <= '9')
+        || current_char == '.') {
+
+        if (current_char == '.' ) {
+            /* . is encountered but there's already a decimal */
+            if (decimal_already_covered) {
+                fprintf(stderr, "Syntax error: Encountered an extra .\n");
+                return -1;
+            }
+
+            decimal_already_covered = true;
+        }
+
         advance_current(lexer_obj);
         current_char = lexer_obj->source[lexer_obj->current];
     }
@@ -121,9 +134,9 @@ scan_token(struct Lexer_obj *lexer_obj)
         case ' ': case '\n': case '\t':
             break;
 
-        /* Number tokens */
         default:
-            if (c >= '0' && c <= '9') {
+            /* Number tokens */
+            if ((c >= '0' && c <= '9') || c == '.') {
                 err_return = handle_number(lexer_obj);
                 break;
             }
@@ -165,7 +178,10 @@ tokenize(char *input)
      */
     struct Lexer_obj *lexer_obj = malloc(sizeof(*lexer_obj));
 
-    if (!lexer_obj) return NULL;
+    if (!lexer_obj) {
+        perror(NULL);
+        return NULL;
+    }
 
     init_parameters(lexer_obj, input);
 
