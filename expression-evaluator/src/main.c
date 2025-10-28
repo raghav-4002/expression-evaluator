@@ -26,7 +26,8 @@ main(void)
         traverse_tree(ast_root);
 
         double result;
-        evaluate_ast(ast_root, &result);
+        if (evaluate_ast(ast_root, &result) == NULL) continue;
+
         printf("\nResult of expression: %lf\n", result);
 
         //TODO: Logic for freeing AST
