@@ -194,6 +194,7 @@ tokenize(char *input)
 
         if (err_return == -1) {
             free_tokens_on_error(lexer_obj);
+            free(lexer_obj);
             return NULL;
         }
     }
@@ -203,8 +204,12 @@ tokenize(char *input)
 
     if (err_return == -1) {
         free_tokens_on_error(lexer_obj);
+        free(lexer_obj);
         return NULL;
     }
 
-    return lexer_obj->tokens;
+    Token *tokens = lexer_obj->tokens;
+    free(lexer_obj);
+
+    return tokens;
 }

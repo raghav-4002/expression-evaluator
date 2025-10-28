@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "node.h"
 #include "token.h"
@@ -7,6 +8,15 @@
 
 
 // TODO: Rewrite evaluator to handle unary operation
+
+
+void
+free_children_nodes(Tree_node *left, Tree_node *right)
+{
+    free(left);
+    free(right);
+}
+
 
 int
 calculate(Tree_node *left, Tree_node *root, Tree_node *right)
@@ -71,6 +81,8 @@ evaluate_ast(Tree_node *ast_root, double *result)
     if (calculate(left, ast_root, right) == -1) {
         return NULL;
     }
+
+    free_children_nodes(left, right);
 
     /* Update `result` everytime value of `ast_root` is set */
     *result = ast_root->value;
