@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "input.h"
+#include "linenoise/linenoise.h"
 #include "lexer.h"
 #include "node.h"
 #include "parser.h"
@@ -31,18 +31,14 @@ main(void)
         "\nGrouping of numbers via parenthesis is also supported\n"
         "================================================================\n");
 
-    // while (1) {
-        /* Reading input */
-        printf("\n> ");
-        char *input = read_from_stdin();
-        if (!input) return 0;//continue;
+    char *input;
 
+    while ((input = linenoise("> ")) != NULL) {
         /* Input tokenization */
         Token *tokens = tokenize(input);
         if (!tokens) {
             cleanup(input, NULL, NULL);
-            return 0;
-            // continue;
+            continue;
         }
 
         /* Parsing tokens */
@@ -50,19 +46,17 @@ main(void)
         Tree_node *ast_root = parse_expression(tokens, &current);
         if (!ast_root) {
             cleanup(input, tokens, NULL);
-            return 0;
-            // continue;
+            continue;
         }
 
         /* Evaluation and printing of result */
         if (evaluate_ast(ast_root) == NULL) {
             cleanup(input, tokens, ast_root);
-            return 0;
-            // continue;
+            continue;
         }
 
         printf("%.3lf\n", ast_root->value);
 
         cleanup(input, tokens, ast_root);
-    // }
+    }
 }
