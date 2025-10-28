@@ -5,7 +5,7 @@
 #include "node.h"
 
 
-Tree_node *evaluate_ast(Tree_node *ast_root, double *result);
+Tree_node *evaluate_ast(Tree_node *ast_root);
 
 
 #endif //EVALUATOR_H_

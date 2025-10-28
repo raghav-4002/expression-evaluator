@@ -10,14 +10,6 @@
 // TODO: Rewrite evaluator to handle unary operation
 
 
-void
-free_children_nodes(Tree_node *left, Tree_node *right)
-{
-    free(left);
-    free(right);
-}
-
-
 int
 calculate(Tree_node *left, Tree_node *root, Tree_node *right)
 {
@@ -39,7 +31,7 @@ calculate(Tree_node *left, Tree_node *root, Tree_node *right)
 
         case SLASH:
             if (!right->value) {
-                fprintf(stderr, "Dividing %lf with zero is invalid\n", left->value);
+                fprintf(stderr, "Division by 0 is invalid\n");
                 return -1;
             }
 
@@ -69,22 +61,28 @@ calculate(Tree_node *left, Tree_node *root, Tree_node *right)
 
 
 Tree_node *
-evaluate_ast(Tree_node *ast_root, double *result)
+evaluate_ast(Tree_node *ast_root)
 {
     if (!ast_root) return NULL;
     if (ast_root->type == NUMBER) return ast_root;
 
-    Tree_node *left = evaluate_ast(ast_root->left, result);
-    Tree_node *right = evaluate_ast(ast_root->right, result);
+    /*
+     * If either of `left` or `right` is `NULL`,
+     * this means that the previous calculation raised an
+     * error. Thus, immediately returning from all recursive
+     * calls is necessary.
+     */
 
-    /* Calculate the result and store inside `ast_root->value` */
+    Tree_node *left  = evaluate_ast(ast_root->left);
+    if (!left) return NULL;
+
+    Tree_node *right = evaluate_ast(ast_root->right);
+    if (!right) return NULL;
+
+    /* Store the resut of operation inside ast_root */
     if (calculate(left, ast_root, right) == -1) {
         return NULL;
     }
 
-    free_children_nodes(left, right);
-
-    /* Update `result` everytime value of `ast_root` is set */
-    *result = ast_root->value;
     return ast_root;
 }

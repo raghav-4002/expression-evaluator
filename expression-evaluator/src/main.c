@@ -31,14 +31,13 @@ main(void)
 
     traverse_tree(ast_root);
 
-    double result;
-    if (evaluate_ast(ast_root, &result) == NULL) {
+    if (evaluate_ast(ast_root) == NULL) {
         free(expression);
         free(tokens);
         return 0;
     }
 
-    printf("\nResult of expression: %lf\n", result);
+    printf("\nResult of expression: %lf\n", ast_root->value);
 
     free(expression);
     free(tokens);
