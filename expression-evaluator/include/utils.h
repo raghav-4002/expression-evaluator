@@ -8,6 +8,7 @@
 
 
 void free_tokens(Token *tokens);
+void destroy_tree(Tree_node *root);
 void traverse_tree(Tree_node *ast_root);
 
 

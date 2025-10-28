@@ -49,6 +49,7 @@ calculate(Tree_node *left, Tree_node *root, Tree_node *right)
 
         case UNARY_MINUS:
             result = left->value * -1;
+            break;
 
         default:
             /* dummy case to silent compiler warning */
@@ -70,14 +71,18 @@ evaluate_ast(Tree_node *ast_root)
      * If either of `left` or `right` is `NULL`,
      * this means that the previous calculation raised an
      * error. Thus, immediately returning from all recursive
-     * calls is necessary.
+     * calls is necessary. This rule is spared for root type
+     * `UNARY_MINUS` as it's right child is always `NULL`.
      */
 
     Tree_node *left  = evaluate_ast(ast_root->left);
     if (!left) return NULL;
 
     Tree_node *right = evaluate_ast(ast_root->right);
-    if (!right) return NULL;
+
+    /* Right child of `UNARY_MINUS` is always `NULL`, thus 
+     * no error in that case.*/
+    if (!right && ast_root->type != UNARY_MINUS) return NULL;
 
     /* Store the resut of operation inside ast_root */
     if (calculate(left, ast_root, right) == -1) {

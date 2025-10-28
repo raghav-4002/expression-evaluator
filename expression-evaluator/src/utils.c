@@ -13,6 +13,17 @@ free_tokens(Token *tokens)
 
 
 void
+destroy_tree(Tree_node *root)
+{
+    if (!root) return;
+
+    destroy_tree(root->left);
+    destroy_tree(root->right);
+    free(root);
+}
+
+
+void
 traverse_tree(Tree_node *ast_root)
 {
     if (ast_root == NULL) return;

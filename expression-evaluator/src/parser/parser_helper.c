@@ -4,6 +4,7 @@
 #include "parser_helper.h"
 #include "node.h"
 #include "token.h"
+#include "utils.h"
 
 
 Tree_node *
@@ -69,17 +70,6 @@ empty_stack(Paren_stack **paren_stack)
     while (*paren_stack) {
         pop_paren(paren_stack);
     }
-}
-
-
-static void
-destroy_tree(Tree_node *root)
-{
-    if (!root) return;
-
-    destroy_tree(root->left);
-    destroy_tree(root->right);
-    free(root);
 }
 
 

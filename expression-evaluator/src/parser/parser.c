@@ -1,4 +1,3 @@
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,8 +6,8 @@
 #include "parser_helper.h"
 #include "token.h"
 
-// TODO: Add parsing support for unary operator (- and +)
 
+/* Stack to match an opening parenthesis with closed one */
 Paren_stack *paren_stack = NULL;
 
 

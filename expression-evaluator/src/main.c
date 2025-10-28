@@ -13,7 +13,7 @@ cleanup(char *input, Token *tokens, Tree_node *ast_root)
 {
     free(input);
     free(tokens);
-    free(ast_root);
+    destroy_tree(ast_root);
 
 }
 
@@ -31,17 +31,18 @@ main(void)
         "\nGrouping of numbers via parenthesis is also supported\n"
         "================================================================\n");
 
-    while (1) {
+    // while (1) {
         /* Reading input */
         printf("\n> ");
         char *input = read_from_stdin();
-        if (!input) continue;
+        if (!input) return 0;//continue;
 
         /* Input tokenization */
         Token *tokens = tokenize(input);
         if (!tokens) {
             cleanup(input, NULL, NULL);
-            continue;
+            return 0;
+            // continue;
         }
 
         /* Parsing tokens */
@@ -49,17 +50,19 @@ main(void)
         Tree_node *ast_root = parse_expression(tokens, &current);
         if (!ast_root) {
             cleanup(input, tokens, NULL);
-            continue;
+            return 0;
+            // continue;
         }
 
         /* Evaluation and printing of result */
         if (evaluate_ast(ast_root) == NULL) {
             cleanup(input, tokens, ast_root);
-            continue;
+            return 0;
+            // continue;
         }
 
         printf("%.3lf\n", ast_root->value);
 
         cleanup(input, tokens, ast_root);
-    }
+    // }
 }
