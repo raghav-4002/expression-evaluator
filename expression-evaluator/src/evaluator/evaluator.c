@@ -56,7 +56,7 @@ evaluate_ast(Tree_node *ast_root, double *result)
     Tree_node *right = evaluate_ast(ast_root->right, result);
 
     ast_root->value = calculate(left, ast_root, right);
-    *result += ast_root->value;
+    *result = ast_root->value;
 
     return ast_root;
 }
