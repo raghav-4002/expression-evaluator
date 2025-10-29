@@ -11,7 +11,7 @@ The following installation instructions are specific to Unix-like operating syst
 #+end_quote
 
 #+begin_src sh
-git clone <repo-id-goes-here> ~/expression-evaluator
+git clone git@github.com:raghav-4002/expression-evaluator.git ~/expression-evaluator
 cd ~/expression-evaluator
 make
 #+end_src
