@@ -23,12 +23,13 @@ main(void)
 {
     printf("================================================================\n"
            "Supported operations:\n"
-        "+ : Addition\n"
-        "- : Subtraction\n"
-        "* : Multiplication\n"
-        "/ : Division\n"
-        "^ : Exponentiation\n"
-        "\nGrouping of numbers via parenthesis is also supported\n"
+           "+ : Addition\n"
+           "- : Subtraction\n"
+           "* : Multiplication\n"
+           "/ : Division\n"
+           "^ : Exponentiation\n"
+           "\nGrouping of numbers via parenthesis is also supported\n"
+           "\nTo quit: Ctrl-d or Ctrl-c\n"
         "================================================================\n");
 
     char *input;
