@@ -105,7 +105,7 @@ void
 free_tokens_on_error(struct Lexer_obj *lexer_obj)
 {
     Token *tokens       = lexer_obj->tokens;
-    free_tokens(tokens);
+    free(tokens);
 }
 
 

@@ -6,13 +6,6 @@
 
 
 void
-free_tokens(Token *tokens)
-{
-    free(tokens);
-}
-
-
-void
 destroy_tree(Tree_node *root)
 {
     if (!root) return;
