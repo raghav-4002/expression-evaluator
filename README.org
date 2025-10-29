@@ -17,18 +17,18 @@ make
 #+end_src
 
 - Now that the project is cloned and compiled, run it using
-  #+begin_src bash
+#+begin_src bash
 ./eval
-  #+end_src
+#+end_src
 
 
 * Features and Capabilities
 ** Support for basic mathematical operations like
-  - Addition (+)
-  - Subtraction (-)
-  - Multiplication (*)
-  - Division (/)
-  - Exponentiation (^)
+  - Addition (~+~)
+  - Subtraction (~-~)
+  - Multiplication (~*~)
+  - Division (~/~)
+  - Exponentiation (~^~)
 ** Grouping and operator precedence
 - Operations are carried out in correct precedence order, following the BODMAS (or PEMDAS) rule.
   - Parenthesis are handled first. In nested parenthesis grouping, innermost group is evaluated first.
@@ -62,11 +62,12 @@ There are 4 major components that take the input, tokenize it, produce an AST an
 ** Component 1: Input reading
 - This component reads user input in raw string form.
 - Associated files and directories
-  - ~libs/linenoise/~: Consists of the ~linenoise~ library that deals with single line terminal editing and input reading. For more details: <linenoise-link-goes-here>
+  - ~libs/linenoise/~: Consists of the ~linenoise~ library that deals with single line terminal editing and input reading. For more details: https://github.com/antirez/linenoise
 
 ** Component 2: Lexical Analyser or Lexer
 - This component breaks the raw input string into *lexical tokens*.
-- Each token has the following components:
+
+- Each token has the following fields:
   - ~type~ that stores the type of token.
     - The following types are defined:
       - ~NUMBER~
@@ -76,6 +77,7 @@ There are 4 major components that take the input, tokenize it, produce an AST an
       - ~SLASH~
       - ~POWER~
       - ~NIL~
+
     - If a tokens can't be represented by the above type, a lexical error is thrown.
       #+begin_src
 > a + b
@@ -86,7 +88,7 @@ Unrecognised token: 'a'
     - For tokens of type ~NUMBER~, this is equal to the actual value of the number.
     - For rest of the tokens, this is set to ~0~ by default.
 - The following files are associated with the lexer:
-  - ~include/token.h~: Contains definitions and types of tokens.
+  - ~include/token.h~: Contains token definition.
   - ~include/lexer.h~: Contains the public interface to the lexer module.
   - ~src/lexer/lexer.c~: Source file containing the functions that actually apply tokenization.
   - ~src/lexer/lexer_helper.c~ and ~src/lexer/lexer_helper.h~: Private helper files for the lexer.
