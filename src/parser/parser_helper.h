@@ -17,7 +17,6 @@ Token_type consume(Token *tokens, size_t *current);
 void push_paren(Paren_stack **paren_stack);
 void pop_paren(Paren_stack **paren_stack);
 void wrap_up_parser(Tree_node *root, Paren_stack **paren_stack);
-void update_sign(Token_type operator, Tree_node **right);
 
 
 #endif // PARSER_HELPER_H_

@@ -11,7 +11,7 @@
 Paren_stack *paren_stack = NULL;
 
 
-Tree_node *parse_expression(Token *tokens, size_t *current);
+static Tree_node *parse_expression(Token *tokens, size_t *current);
 
 
 static Tree_node *
@@ -115,7 +115,7 @@ parse_factor(Token *tokens, size_t *current)
 }
 
 
-Tree_node *
+static Tree_node *
 parse_expression(Token *tokens, size_t *current)
 {
     Tree_node *expr = parse_factor(tokens, current);

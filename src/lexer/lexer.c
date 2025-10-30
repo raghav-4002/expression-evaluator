@@ -11,9 +11,9 @@
 /*
  * @brief : Adds literal value of argument into token
             of type `COMMAND`.
- * @param : A pointer to `struct Parameters`.
+ * @param : A pointer to `struct Lexer_obj`.
  */
-void
+static void
 add_number(struct Lexer_obj *lexer_obj)
 {
     char *string     = lexer_obj->source;
@@ -27,11 +27,11 @@ add_number(struct Lexer_obj *lexer_obj)
 
 /*
  * @brief : Adds a token into `tokens` array.
- * @param : A pointer to `struct Parameters`.
+ * @param : A pointer to `struct Lexer_obj`.
             `Token_type` enum Member.
  * @return: `0` on success; `-1` on failure.
  */
-int
+static int
 add_token(struct Lexer_obj *lexer_obj, Token_type type)
 {
     Token *tokens = lexer_obj->tokens;
@@ -66,10 +66,10 @@ add_token(struct Lexer_obj *lexer_obj, Token_type type)
 
 /*
  * @brief : Tokenizes a lexeme of type `NUMBER`
- * @param : A pointer to `struct Parameters`.
+ * @param : A pointer to `struct Lexer_obj`.
  * @return: `0` on success; `-1` on failure.
  */
-int
+static int
 handle_number(struct Lexer_obj *lexer_obj)
 {
     char current_char = lexer_obj->source[lexer_obj->current];
@@ -100,10 +100,10 @@ handle_number(struct Lexer_obj *lexer_obj)
 
 /*
  * @brief : Recognises the current lexeme.
- * @param : A pointer to `struct Parameters`.
+ * @param : A pointer to `struct Lexer_obj`.
  * @return: `0` on success; `-1` on failure
  */
-int
+static int
 scan_token(struct Lexer_obj *lexer_obj)
 {
     char c = advance_current(lexer_obj);
@@ -163,9 +163,9 @@ Token *
 tokenize(char *input)
 {
     /*
-     * A pointer to structure `Parameters`
+     * A pointer to structure `Lexer_obj`
 
-     * Members of `struct Parameters`
+     * Members of `struct Lexer_obj`
 
      * `Token *tokens`  : a pointer to an array of tokens.
      * `size_t arr_size`: represents size of the tokens array.
@@ -193,8 +193,7 @@ tokenize(char *input)
         err_return        = scan_token(lexer_obj);
 
         if (err_return == -1) {
-            free_tokens_on_error(lexer_obj);
-            free(lexer_obj);
+            free_lexer_obj(lexer_obj);
             return NULL;
         }
     }
@@ -203,13 +202,12 @@ tokenize(char *input)
     err_return = add_token(lexer_obj, NIL);
 
     if (err_return == -1) {
-        free_tokens_on_error(lexer_obj);
-        free(lexer_obj);
+        free_lexer_obj(lexer_obj);
         return NULL;
     }
 
     Token *tokens = lexer_obj->tokens;
-    free(lexer_obj);
+    free(lexer_obj); /* only destroy the lexer_obj not its tokens */
 
     return tokens;
 }

@@ -102,10 +102,11 @@ create_substring(char *string, size_t start, size_t end)
  * @param : A pointer to `struct Parameters`.
  */
 void
-free_tokens_on_error(struct Lexer_obj *lexer_obj)
+free_lexer_obj(struct Lexer_obj *lexer_obj)
 {
     Token *tokens       = lexer_obj->tokens;
     free(tokens);
+    free(lexer_obj);
 }
 
 

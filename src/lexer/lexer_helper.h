@@ -19,12 +19,12 @@ struct Lexer_obj
 
 
 void init_parameters(struct Lexer_obj *lexer_obj, char *input);
-bool current_is_at_end(struct Lexer_obj *parameters);
-char advance_current(struct Lexer_obj *parameters);
-bool match(struct Lexer_obj *parameters, char expected);
+bool current_is_at_end(struct Lexer_obj *lexer_obj);
+char advance_current(struct Lexer_obj *lexer_obj);
+bool match(struct Lexer_obj *lexer_obj, char expected);
 void init_token(Token *token, Token_type type);
 char *create_substring(char *string, size_t start, size_t end);
-void free_tokens_on_error(struct Lexer_obj *parameters);
+void free_lexer_obj(struct Lexer_obj *lexer_obj);
 double extract_number(char *string, size_t start, size_t end);
 
 
