@@ -43,8 +43,7 @@ main(void)
         }
 
         /* Parsing tokens */
-        size_t current = 0;
-        Tree_node *ast_root = parse_expression(tokens, &current);
+        Tree_node *ast_root = parse_tokens(tokens);
         if (!ast_root) {
             cleanup(input, tokens, NULL);
             continue;

@@ -168,3 +168,23 @@ parse_expression(Token *tokens, size_t *current)
         return expr;
     }
 }
+
+
+Tree_node *
+parse_tokens(Token *tokens)
+{
+    size_t current = 0;
+
+    Tree_node *expr = parse_expression(tokens, &current);
+
+    /* Error has been printed */
+    if (!expr) return NULL;
+
+    /* If not all tokens are parsed, throw an error */
+    if (tokens[current].type != NIL) {
+        fprintf(stderr, "Syntax error\n");
+        return NULL;
+    }
+
+    return expr;
+}
